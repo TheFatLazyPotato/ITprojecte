@@ -1,9 +1,17 @@
+var minimist = require("minimist");
+
 const http = require("http");
 const fs = require("fs").promises;
 
-const host = 'localhost';
-const port = 8000;
+//Get cmd arguments
+var args = minimist(process.argv.slice(2), opts={
+	string: 'host',
+	string: 'port',
+	alias: {h: 'host', p: 'port'},
+	default: {host: 'localhost', port: '8000'}
+});
 
+const port = Number(args.port);
 
 let indexFile;
 
@@ -18,8 +26,8 @@ const server = http.createServer(requestListener);
 fs.readFile(__dirname + "/index.html")
   .then(contents => {
     indexFile = contents;
-    server.listen(port,host, () => {
-      console.log(`Server is running on http://${host}:${port}`);
+    server.listen(port,args.host, () => {
+      console.log(`Server is running on http://${args.host}:${port}`);
     });
   })
   .catch(err => {
