@@ -18,12 +18,12 @@ let indexFile;
 const requestListener = function (req, res) {
   res.setHeader("Content-Type", "text/html");
   res.writeHead(200);
-  res.end(indexFile);    
+  res.end(indexFile);
 };
 
 const server = http.createServer(requestListener);
 
-fs.readFile(__dirname + "/index.html")
+fs.readFile(__dirname + "/html/index.html")
   .then(contents => {
     indexFile = contents;
     server.listen(port,args.host, () => {
