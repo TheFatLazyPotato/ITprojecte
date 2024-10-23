@@ -23,6 +23,7 @@ function addHtmlFileToMap(htmlMap, fileLoc, url)
 		});
 }
 
+//Matching .html files to different url paths
 const htmlFiles = new Map();
 	addHtmlFileToMap(htmlFiles, "/html/index.html", "/");
 	addHtmlFileToMap(htmlFiles, "/html/indexTeste.html", "/teste");
@@ -51,18 +52,39 @@ const requestListener = function (req, res) {
 	}
 	console.log(`Request: path = ${urlPath}, args = ${Object.entries(urlArgs)}`);
 	
-	//Send HTML file
-	res.setHeader("Content-Type", "text/html");
-	if(!htmlFiles.has(urlPath))
+	
+	//Send image
+	if(urlPath.indexOf("/images/html_images/") == 0)
 	{
+		res.setHeader("Content-Type", "image/jpg");
+		fs.readFile(__dirname + urlPath)
+			.then(im => 
+			{
+				res.writeHead(200);
+				res.end(im);
+				console.log(`Sent image: ${urlPath}`);
+			})
+			.catch(err =>
+			{
+				res.writeHead(404);
+				console.error(`No image: ${urlPath}`);
+			});
+	}
+	//Send HTML file
+	else if(!htmlFiles.has(urlPath))
+	{
+		res.setHeader("Content-Type", "text/html");
 		res.writeHead(404);
 		res.end("<h1>404 Wrong URL</h1>");
 	}
 	else
 	{
+		res.setHeader("Content-Type", "text/html");
 		res.writeHead(200);
 		res.end(htmlFiles.get(urlPath));
 	}
+	
+	
 };
 
 const server = http.createServer(requestListener);
