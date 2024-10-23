@@ -29,9 +29,40 @@ const htmlFiles = new Map();
 
 
 const requestListener = function (req, res) {
-  res.setHeader("Content-Type", "text/html");
-  res.writeHead(200);
-  res.end(htmlFiles.get(req.url));
+
+	//Process URL into path and arguments
+	let urlPath;
+	const urlArgs = {};
+	if(req.url.includes("?"))
+	{
+		urlPath = req.url.substr(0,req.url.indexOf("?"));
+		
+		const urlTemp = req.url.slice(req.url.indexOf("?")+1).split("&");
+		console.log(urlTemp);
+		for(i in urlTemp)
+		{
+			argsTemp = urlTemp[i].split("=");
+			urlArgs[argsTemp[0]] = argsTemp[1];
+		}
+	}
+	else
+	{
+		urlPath = req.url;
+	}
+	console.log(`Request: path = ${urlPath}, args = ${Object.entries(urlArgs)}`);
+	
+	//Send HTML file
+	res.setHeader("Content-Type", "text/html");
+	if(!htmlFiles.has(urlPath))
+	{
+		res.writeHead(404);
+		res.end("<h1>404 Wrong URL</h1>");
+	}
+	else
+	{
+		res.writeHead(200);
+		res.end(htmlFiles.get(urlPath));
+	}
 };
 
 const server = http.createServer(requestListener);
