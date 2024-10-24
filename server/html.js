@@ -62,12 +62,12 @@ const requestListener = function (req, res) {
 			{
 				res.writeHead(200);
 				res.end(im);
-				console.log(`Sent image: ${urlPath}`);
+				console.log(`\tSent image: ${urlPath}`);
 			})
 			.catch(err =>
 			{
 				res.writeHead(404);
-				console.error(`No image: ${urlPath}`);
+				console.error(`\tNo image: ${urlPath}`);
 			});
 	}
 	//Send HTML file
@@ -88,19 +88,7 @@ const requestListener = function (req, res) {
 };
 
 const server = http.createServer(requestListener);
-
-/*fs.readFile(__dirname + "/html/index.html")
-  .then(contents => {
-    indexFile = contents;
-    server.listen(port,args.host, () => {
-      console.log(`Server is running on http://${args.host}:${port}`);
-    });
-  })
-  .catch(err => {
-    console.error(`Could not read index.html file: ${err}`);
-    process.exit(1);
-  });*/
   
 server.listen(port, args.host, () => {
-  console.log(`Server is running on http://${args.host}:${port}`);
+  console.info(`Server is running on http://${args.host}:${port}`);
 });
