@@ -1,19 +1,85 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>Logo is the way, Logo is the law</title>
-  <link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
+<title>Logo is the way, Logo is the law</title>
+<link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
 </head>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 img {
-  display: block;
+  <!--display: block;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto;-->
+  width: 100%;
+  height: auto
 }
+
+* {
+  box-sizing: border-box;
+}
+
+.row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+[class*="col-"] {
+  float: left;
+  padding: 15px;
+  border: 4px solid black;
+}
+
+.col-1 {width: 8.33%;}
+.col-2 {width: 16.66%;}
+.col-3 {width: 25%;}
+.col-4 {width: 33.33%;}
+.col-5 {width: 41.66%;}
+.col-6 {width: 50%;}
+.col-7 {width: 58.33%;}
+.col-8 {width: 66.66%;}
+.col-9 {width: 75%;}
+.col-10 {width: 83.33%;}
+.col-11 {width: 91.66%;}
+.col-12 {width: 100%;}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  [class*="col-"] {
+    width: 100%;
+  }
+}
+
+.upload {
+  float: left;
+  padding: 15px;
+  border: 1px solid black;
+}
+
+.settings {
+  float: left;
+  padding: 15px;
+  border: 1px solid black;
+}
+
 </style>
 <body>
 
-<img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" style="width:276px;height:90px;">
+<div class="logo">
+  <img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" style="width:276px;height:90px;">
+</div>
+
+<div class="row">
+  <div class="col-5 upload">
+    <h1>Upload:</h1>
+  </div>
+
+  <div class="col-7 settings">
+    <h1>Settings:</h1>
+  </div>
+
 
 <h1>WORK IS IN PROGRESS INDEED.</h1>
 
