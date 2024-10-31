@@ -16,9 +16,12 @@ const port = Number(args.port);
 function addHtmlFileToMap(htmlMap, fileLoc, url)
 {
 	fs.readFile(__dirname + fileLoc)
-		.then(cont => {htmlMap.set(url, cont);})
+		.then(cont => 
+		{
+			htmlMap.set(url, cont);
+		})
 		.catch(err => {
-			console.error(`File error: ${err.code}: ${err.path}`);
+			console.error(`File error: ${err.code}: ${err.message}`);
 			process.exit(1);
 		});
 }
@@ -28,10 +31,28 @@ const htmlFiles = new Map();
 	addHtmlFileToMap(htmlFiles, "/html/index.html", "/");
 	addHtmlFileToMap(htmlFiles, "/html/indexTeste.html", "/teste");
 
+/*
+function addSession(session, client, i)
+{
+	if(session.has(client))
+		return;
+	
+	session.set(client, i);
+	i++;
+}
+
+const sessions = new Map();
+let nSessions = 0;
+*/
+
 
 const requestListener = function (req, res) {
 
+	//Process header
+
+
 	//Process URL into path and arguments
+	console.log(req);
 	let urlPath;
 	const urlArgs = {};
 	if(req.url.includes("?"))
@@ -54,7 +75,7 @@ const requestListener = function (req, res) {
 	
 	
 	//Send image
-	if(urlPath.indexOf("/images/html_images/") == 0)
+	if(urlPath.startsWith("/images/html_images/"))
 	{
 		res.setHeader("Content-Type", "image/jpg");
 		fs.readFile(__dirname + urlPath)
@@ -68,6 +89,21 @@ const requestListener = function (req, res) {
 			{
 				res.writeHead(404);
 				console.error(`\tNo image: ${urlPath}`);
+			});
+	}
+	//Send JavaScript file
+	else if(urlPath.startsWith("/scripts/"))
+	{
+		res.setHeader("Content-Type", "text/javascript");
+		fs.readFile(__dirname + urlPath)
+			.then(scrpt => 
+			{
+				res.writeHead(200);
+				//res.end(scrpt.replace("#HOST", `http://${host}:${port}`));
+			})
+			.catch(err =>
+			{
+				res.writeHead(404);
 			});
 	}
 	//Send HTML file
