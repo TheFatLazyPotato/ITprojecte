@@ -45,14 +45,76 @@ const sessions = new Map();
 let nSessions = 0;
 */
 
+function handleGetRequest(req, res, urlPath, urlArgs)
+{
+	//Send image
+	if(urlPath.startsWith("/images/html_images/"))
+	{
+		res.setHeader("Content-Type", "image/jpg");
+		fs.readFile(__dirname + urlPath)
+			.then(im => 
+			{
+				res.writeHead(200);
+				res.end(im);
+				console.log(`\tSent image: ${urlPath}`);
+			})
+			.catch(err =>
+			{
+				res.writeHead(404);
+				console.error(`\tNo image: ${urlPath}`);
+			});
+	}
+	
+	//Send JavaScript file
+	else if(urlPath.startsWith("/scripts/"))
+	{
+		res.setHeader("Content-Type", "text/javascript");
+		fs.readFile(__dirname + urlPath)
+			.then(scrpt => 
+			{
+				res.writeHead(200);
+				//res.end(scrpt.replace("#HOST", `http://${host}:${port}`));
+			})
+			.catch(err =>
+			{
+				res.writeHead(404);
+			});
+	}
+	
+	//Send HTML file
+	else if(!htmlFiles.has(urlPath))
+	{
+		res.setHeader("Content-Type", "text/html");
+		res.writeHead(404);
+		res.end("<h1>404 Wrong URL</h1>");
+	}
+	else
+	{
+		res.setHeader("Content-Type", "text/html");
+		res.writeHead(200);
+		res.end(htmlFiles.get(urlPath));
+	}
+}
+
+
+function handlePostRequest(req, res, urlPath, urlArgs)
+{
+	if(urlPath == "/sendFile")
+	{
+		res.writeHead(403);
+		res.end("no implentation yet");
+	}
+	else
+	{
+		res.writeHead(403);
+		res.end("wrong url");
+	}
+}
 
 const requestListener = function (req, res) {
 
-	//Process header
-
-
 	//Process URL into path and arguments
-	console.log(req);
+	console.log(req.method);
 	let urlPath;
 	const urlArgs = {};
 	if(req.url.includes("?"))
@@ -73,53 +135,25 @@ const requestListener = function (req, res) {
 	}
 	console.log(`Request: path = ${urlPath}, args = ${Object.entries(urlArgs)}`);
 	
-	
-	//Send image
-	if(urlPath.startsWith("/images/html_images/"))
+	switch(req.method)
 	{
-		res.setHeader("Content-Type", "image/jpg");
-		fs.readFile(__dirname + urlPath)
-			.then(im => 
-			{
-				res.writeHead(200);
-				res.end(im);
-				console.log(`\tSent image: ${urlPath}`);
-			})
-			.catch(err =>
-			{
-				res.writeHead(404);
-				console.error(`\tNo image: ${urlPath}`);
-			});
+		case "GET":
+			handleGetRequest(req, res, urlPath, urlArgs);
+			break;
+		case "POST":
+		/*
+			res.setHeader("accept-post", "text/plain");
+			res.writeHead(415);
+			res.end("<h1>Nie!!!</h1>");
+		*/
+			handlePostRequest(req, res, urlPath, urlArgs);
+			break;
+		case "PUT":
+		default:
+			res.writeHead(404);
+			res.end('');
+			break;
 	}
-	//Send JavaScript file
-	else if(urlPath.startsWith("/scripts/"))
-	{
-		res.setHeader("Content-Type", "text/javascript");
-		fs.readFile(__dirname + urlPath)
-			.then(scrpt => 
-			{
-				res.writeHead(200);
-				//res.end(scrpt.replace("#HOST", `http://${host}:${port}`));
-			})
-			.catch(err =>
-			{
-				res.writeHead(404);
-			});
-	}
-	//Send HTML file
-	else if(!htmlFiles.has(urlPath))
-	{
-		res.setHeader("Content-Type", "text/html");
-		res.writeHead(404);
-		res.end("<h1>404 Wrong URL</h1>");
-	}
-	else
-	{
-		res.setHeader("Content-Type", "text/html");
-		res.writeHead(200);
-		res.end(htmlFiles.get(urlPath));
-	}
-	
 	
 };
 
