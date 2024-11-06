@@ -115,7 +115,7 @@ function handlePostRequest(req, res, urlPath, urlArgs)
 			.on('end', () =>
 			{
 				bodyData = Buffer.concat(bodyData).toString();
-			}
+			});
 		fs.writeFile(__dirname + "images/requests/raw/" + urlArgs.name, bodyData,
 			err =>
 			{
