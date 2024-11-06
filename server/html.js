@@ -45,6 +45,8 @@ const sessions = new Map();
 let nSessions = 0;
 */
 
+//-----------------------------GET-----------------------------
+
 function handleGetRequest(req, res, urlPath, urlArgs)
 {
 	//Send image
@@ -96,13 +98,39 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 	}
 }
 
+//-----------------------------POST-----------------------------
 
 function handlePostRequest(req, res, urlPath, urlArgs)
 {
+	console.log(req)
+	
 	if(urlPath == "/sendFile")
 	{
-		res.writeHead(403);
-		res.end("no implentation yet");
+		let bodyData = [];
+		req
+			.on('data', chunk =>
+			{
+				bodyData.push(chunk);
+			})
+			.on('end', () =>
+			{
+				bodyData = Buffer.concat(bodyData).toString();
+			}
+		fs.writeFile(__dirname + "images/requests/raw/" + urlArgs.name, bodyData,
+			err =>
+			{
+				if(err)
+				{
+					console.error(err.message);
+					res.writeHead(403);
+					res.end("Could not save file on the server.");
+				}
+				else
+				{
+					res.writeHead(201);
+					res.end("images/requests/raw/" + urlArgs.name);
+				}
+			});
 	}
 	else
 	{
@@ -156,6 +184,8 @@ const requestListener = function (req, res) {
 	}
 	
 };
+
+//-----------------------------MAIN-----------------------------
 
 const server = http.createServer(requestListener);
   
