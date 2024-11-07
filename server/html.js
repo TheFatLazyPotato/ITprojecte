@@ -174,12 +174,12 @@ const requestListener = function (req, res) {
 	}
 	console.log(`Request: path = ${urlPath}, args = ${Object.entries(urlArgs)}`);
 	
-	switch(req.method)
+	switch(req.method.toLowerCase())
 	{
-		case "GET":
+		case "get":
 			handleGetRequest(req, res, urlPath, urlArgs);
 			break;
-		case "POST":
+		case "post":
 		/*
 			res.setHeader("accept-post", "text/plain");
 			res.writeHead(415);
@@ -187,7 +187,7 @@ const requestListener = function (req, res) {
 		*/
 			handlePostRequest(req, res, urlPath, urlArgs);
 			break;
-		case "PUT":
+		case "put":
 		default:
 			res.writeHead(404);
 			res.end('');

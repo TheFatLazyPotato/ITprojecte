@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "formidable": "^3.5.2",
     "minimist": "^1.2.8"
   }
 }

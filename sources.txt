@@ -20,3 +20,5 @@ JavaScript libraries used
   Minimist:
     https://www.npmjs.com/package/minimist
     https://cartermp.github.io/cheatsheets/minimist
+  Formidable:
+    https://github.com/node-formidable/formidable
