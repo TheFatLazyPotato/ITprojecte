@@ -2,3 +2,4 @@ node_modules/
 server/package-lock.json
 server/runServer.bat
 Logo/~$rmonogram IT.odt
+/server/images/requests

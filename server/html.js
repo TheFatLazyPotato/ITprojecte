@@ -1,12 +1,18 @@
+import { createRequire } from "node:module"
+const require = createRequire(import.meta.url);
+
 var minimist = require("minimist");
 
 const http = require("http");
 const fs = require("fs").promises;
-const fsNoProm = require("fs");
-const form = require("formidable");
+import open from "node:fs";
+
+import formidable from 'formidable';
+
+const __dirname = import.meta.dirname;
 
 //Get cmd arguments
-var args = minimist(process.argv.slice(2), opts={
+var args = minimist(process.argv.slice(2), {
 	string: 'host',
 	string: 'port',
 	alias: {h: 'host', p: 'port'},
@@ -107,8 +113,8 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 	
 	if(urlPath == "/sendFile")
 	{
+		//let bodyData = [];
 		/*
-		let bodyData = [];
 		req
 			.on('data', chunk =>
 			{
@@ -127,11 +133,22 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		imageFile.write(bodyData);
 		imageFIle.close();*/
 		
+		const form = formidable({ uploadDir: __dirname + "/images/requests/raw/", 
+			filename: function ({name, ext, part, form})
+			{
+				return urlArgs.name;
+			},
+			filter: function ({name, oroginalFilename, mimetype})
+			{
+				return mimetype && mimetype.includes("image");
+			}
+		});
 		let fields;
 		let files;
 		try
 		{
 			[fields, files] = await form.parse(req);
+			console.log("File created");
 		}
 		catch (err)
 		{
@@ -141,22 +158,20 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			return;
 		}
 		
-		console.log(JSON.stringify({fields, files}, null, 2));
-		
-		fsNoProm.writeFile(__dirname + "images/requests/raw/" + urlArgs.name, bodyData,
-			err => 
+		fs.readFile(__dirname + "images/requests/raw/" + urlArgs.name)
+			.then(im => 
 			{
-				if(err)
-				{
-					console.log(err.message);
-					res.writeHead(403);
-					res.end("Could not save file on the server");
-					return;
-				}
-				console.log("The file was saved!");
+				res.setHeader("Content-Type", "image/png");
 				res.writeHead(201);
-				res.end("images/requests/raw/" + urlArgs.name);
-			});
+				res.end(im);
+			})
+			.catch(err =>
+			{
+				console.error(err);
+				res.setHeader("Content-Type", "text/html");
+				res.writeHead(403);
+				res.end("<h1>File was sent on the server but cannot be read back<h1>");
+		});
 	}
 	else
 	{
@@ -164,6 +179,8 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		res.end("wrong url");
 	}
 }
+
+//
 
 const requestListener = function (req, res) {
 
@@ -177,9 +194,9 @@ const requestListener = function (req, res) {
 		
 		const urlTemp = req.url.slice(req.url.indexOf("?")+1).split("&");
 		console.log(urlTemp);
-		for(i in urlTemp)
+		for(let i in urlTemp)
 		{
-			argsTemp = urlTemp[i].split("=");
+			const argsTemp = urlTemp[i].split("=");
 			urlArgs[argsTemp[0]] = argsTemp[1];
 		}
 	}
