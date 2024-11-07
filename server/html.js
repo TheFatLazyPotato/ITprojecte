@@ -2,6 +2,8 @@ var minimist = require("minimist");
 
 const http = require("http");
 const fs = require("fs").promises;
+const fsNoProm = require("fs");
+//import { open } from 'node:fs/promises';
 
 //Get cmd arguments
 var args = minimist(process.argv.slice(2), opts={
@@ -100,9 +102,8 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 
 //-----------------------------POST-----------------------------
 
-function handlePostRequest(req, res, urlPath, urlArgs)
+async function handlePostRequest(req, res, urlPath, urlArgs)
 {
-	console.log(req)
 	
 	if(urlPath == "/sendFile")
 	{
@@ -116,20 +117,30 @@ function handlePostRequest(req, res, urlPath, urlArgs)
 			{
 				bodyData = Buffer.concat(bodyData).toString();
 			});
-		fs.writeFile(__dirname + "images/requests/raw/" + urlArgs.name, bodyData,
-			err =>
+		/*var imageFile = await fs.open(__dirname + "images/requests/raw/" + urlArgs.name, 'w');
+			.on('error', () =>
+			{
+				res.writeHead(403);
+				res.end("Could not save file on the server.");
+			});
+		imageFile.write(bodyData);
+		imageFIle.close();*/
+		
+		console.log(bodyData);
+		
+		fsNoProm.writeFile(__dirname + "images/requests/raw/" + urlArgs.name, bodyData,
+			err => 
 			{
 				if(err)
 				{
-					console.error(err.message);
+					console.log(err.message);
 					res.writeHead(403);
-					res.end("Could not save file on the server.");
+					res.end("Could not save file on the server");
+					return;
 				}
-				else
-				{
-					res.writeHead(201);
-					res.end("images/requests/raw/" + urlArgs.name);
-				}
+				console.log("The file was saved!");
+				res.writeHead(201);
+				res.end("images/requests/raw/" + urlArgs.name);
 			});
 	}
 	else

@@ -10,6 +10,7 @@ File Transfer
   https://developer.mozilla.org/en-US/docs/Learn/Forms/Sending_forms_through_JavaScript
   https://stackoverflow.com/questions/14551194/how-are-parameters-sent-in-an-http-post-request
   https://nodejs.org/en/learn/modules/anatomy-of-an-http-transaction
+  https://www.digitalocean.com/community/tutorials/node-fs-js-create-file-read-write
 
 
 
