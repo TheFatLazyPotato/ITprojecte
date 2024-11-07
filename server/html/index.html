@@ -28,8 +28,8 @@ img {
 
 [class*="col-"] {
   float: left;
-  padding: 15px;
-  border: 4px solid black;
+  <!-- padding: 15px; -->
+  <!-- border: 4px solid black; -->
 }
 
 .col-1 {width: 8.33%;}
@@ -44,6 +44,10 @@ img {
 .col-10 {width: 83.33%;}
 .col-11 {width: 91.66%;}
 .col-12 {width: 100%;}
+.col-71 {width: 57.33%;}
+.col-100 {width: 1%;}
+
+
 
 @media only screen and (max-width: 768px) {
   /* For mobile phones: */
@@ -54,31 +58,37 @@ img {
 
 .upload {
   float: left;
-  padding: 15px;
-  border: 1px solid black;
+  padding: 5px;
+  border: 4px solid black;
 }
 
 .settings {
   float: left;
-  padding: 15px;
-  border: 1px solid black;
+  padding: 5px;
+  border: 4px solid black;
 }
 
 </style>
 <body>
 
-<div class="logo">
-  <img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" style="width:276px;height:90px;">
-</div>
+  <div class="logo">
+    <img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" style="width:276px;height:90px;">
+  </div>
 
 <div class="row">
-  <div class="col-5 upload">
+  <div class="col-71 upload">
     <h1>Upload:</h1>
   </div>
 
-  <div class="col-7 settings">
-    <h1>Settings:</h1>
+  <div class="col-100 blank">
+    <h1></h1>
   </div>
+
+  <div class="col-5 settings">
+    <h1>Settings:<br>Loads of them<br>Like a lot a lot<br>And some other stuff<br>I don't know<br>I'm tired</h1>
+  </div>
+
+<img src="../images/html_images/Landscapo.png" alt="Landscapo.png" style="width:auto;height:auto;">
 
 
 <h1>WORK IS IN PROGRESS INDEED.</h1>
