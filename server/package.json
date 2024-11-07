@@ -1,4 +1,8 @@
 {
+  "name": "html",
+  "version": "0.1.0",
+  "description": "",
+  "main": "html.js",
   "dependencies": {
     "formidable": "^3.5.2",
     "minimist": "^1.2.8"

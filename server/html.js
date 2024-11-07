@@ -3,7 +3,7 @@ var minimist = require("minimist");
 const http = require("http");
 const fs = require("fs").promises;
 const fsNoProm = require("fs");
-//import { open } from 'node:fs/promises';
+const form = require("formidable");
 
 //Get cmd arguments
 var args = minimist(process.argv.slice(2), opts={
@@ -107,6 +107,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 	
 	if(urlPath == "/sendFile")
 	{
+		/*
 		let bodyData = [];
 		req
 			.on('data', chunk =>
@@ -116,7 +117,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			.on('end', () =>
 			{
 				bodyData = Buffer.concat(bodyData).toString();
-			});
+			});*/
 		/*var imageFile = await fs.open(__dirname + "images/requests/raw/" + urlArgs.name, 'w');
 			.on('error', () =>
 			{
@@ -126,7 +127,21 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		imageFile.write(bodyData);
 		imageFIle.close();*/
 		
-		console.log(bodyData);
+		let fields;
+		let files;
+		try
+		{
+			[fields, files] = await form.parse(req);
+		}
+		catch (err)
+		{
+			res.setHeader("Content-Type", "text/plain");
+			res.writeHead(err.httpCode || 400);
+			res.end(String(err));
+			return;
+		}
+		
+		console.log(JSON.stringify({fields, files}, null, 2));
 		
 		fsNoProm.writeFile(__dirname + "images/requests/raw/" + urlArgs.name, bodyData,
 			err => 
