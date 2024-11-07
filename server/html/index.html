@@ -121,8 +121,12 @@ html {
   <div class="col-71 upload">
     <img src="../images/html_images/Smoll.png" alt="Logo.com" style="float: left; margin: 5px;">
     <p>File:</p>
-    <p>Size:</p>
-    <input type="file" id="file" name="#SESSION" />
+    <!-- <p>Size:</p> -->
+    <!-- <input type="file" id="file" name="#SESSION" /> -->
+    <form id="uploadForm">
+    <input type="file" id="fileInput" name="file" required>
+    <button type="button" onclick="uploadFile()">Upload File</button>
+    </form>
     <img class="center-fit" src="../images/html_images/Landscapo.png" alt="Landscapo.png" style="width:100%;height:100%;">
   </div>
 
