@@ -158,7 +158,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			return;
 		}
 		
-		fs.readFile(__dirname + "images/requests/raw/" + urlArgs.name)
+		fs.readFile(__dirname + "/images/requests/raw/" + urlArgs.name)
 			.then(im => 
 			{
 				res.setHeader("Content-Type", "image/png");
