@@ -22,3 +22,5 @@ JavaScript libraries used
     https://cartermp.github.io/cheatsheets/minimist
   Formidable:
     https://github.com/node-formidable/formidable
+  mysql:
+    https://www.npmjs.com/package/mysql

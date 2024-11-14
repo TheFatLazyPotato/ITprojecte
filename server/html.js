@@ -1,3 +1,7 @@
+//----------------------------------------------------------------
+//							DEPENDENCIES
+//----------------------------------------------------------------
+
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url);
 
@@ -11,6 +15,12 @@ import formidable from 'formidable';
 
 const __dirname = import.meta.dirname;
 
+const mysql = require("mysql");
+
+//----------------------------------------------------------------
+//							CMD ARGUMENTS
+//----------------------------------------------------------------
+
 //Get cmd arguments
 var args = minimist(process.argv.slice(2), {
 	string: 'host',
@@ -20,6 +30,10 @@ var args = minimist(process.argv.slice(2), {
 });
 
 const port = Number(args.port);
+
+//----------------------------------------------------------------
+//							HTML FILES
+//----------------------------------------------------------------
 	
 function addHtmlFileToMap(htmlMap, fileLoc, url)
 {
@@ -53,7 +67,9 @@ const sessions = new Map();
 let nSessions = 0;
 */
 
-//-----------------------------GET-----------------------------
+//----------------------------------------------------------------
+//								GET
+//----------------------------------------------------------------
 
 function handleGetRequest(req, res, urlPath, urlArgs)
 {
@@ -106,7 +122,9 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 	}
 }
 
-//-----------------------------POST-----------------------------
+//----------------------------------------------------------------
+//								POST
+//----------------------------------------------------------------
 
 async function handlePostRequest(req, res, urlPath, urlArgs)
 {
@@ -180,7 +198,9 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 	}
 }
 
-//
+//----------------------------------------------------------------
+//							SERVER
+//----------------------------------------------------------------
 
 const requestListener = function (req, res) {
 
@@ -225,10 +245,62 @@ const requestListener = function (req, res) {
 			res.end('');
 			break;
 	}
-	
 };
 
-//-----------------------------MAIN-----------------------------
+//----------------------------------------------------------------
+//								MAIN
+//----------------------------------------------------------------
+
+let sqlPassword;
+
+/*
+fs.readFile(__dirname + "/db_password.txt")
+	.then(pswrd =>
+	{
+		sqlPassword = pswrd;
+		console.log(pswrd);
+	})
+	.catch(err =>
+	{
+		if(err)
+		{
+			console.error("Can't find database password");
+			process.exit(1);
+		}
+	});
+*/
+
+var sqlConnection = mysql.createConnection(
+{
+	host: 'localhost',
+	user: 'teste',
+	password: 'Marek1234',	
+	database: 'logo'
+});
+
+sqlConnection.connect(
+	err =>
+	{
+		if(err)
+		{
+			console.error("Cannot connect to database");
+			console.log(err.message);
+			process.exit(1);
+		}
+	}
+);
+
+sqlConnection.query("SELECT * FROM users",
+	(error, result, fields) =>
+	{
+		if(error)
+		{
+			console.error("Cannot read database");
+			process.exit(1);
+		}
+		console.log(result[0]);
+	}
+);
 
 const server = http.createServer(requestListener);
   
