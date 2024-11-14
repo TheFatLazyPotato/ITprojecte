@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Logo is the way, Logo is the law</title>
+<title>Log Logo into Login</title>
 <link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
 </head>
 
@@ -108,13 +108,13 @@ html {
     <p></p>
   </div>
   <div class="collogo-10 form"> <center>
-    <form>
-      <label for="fname">First name:</label><br>
-      <input type="text" id="fname" name="fname" value="Miłosz"><br>
-      <label for="lname">Last name:</label><br>
-      <input type="text" id="lname" name="lname" value="Majster">
+    <form method = "post" action="/login" enctype="multipart/form-data">
+      <label for="fname">Login:</label><br>
+      <input type="text" id="login" name="login" value="Miłosz123"><br>
+      <label for="lname">Password:</label><br>
+      <input type="password" id="password" name="password"><br><br>
+      <input type="button" id="blogin" name="blogin" value="login">
     </form>
-    <button type="button" onclick="uploadFile()">Login</button>
     </center>
   </div>
   <div class="collogo-1">
