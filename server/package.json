@@ -5,6 +5,8 @@
   "main": "html.js",
   "type": "module",
   "dependencies": {
+    "express": "^4.21.1",
+    "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
     "formidable": "^3.5.2",
     "minimist": "^1.2.8",

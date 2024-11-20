@@ -1,0 +1,20 @@
+{
+	"serverHost": "localhost",
+	"serverPort": 8077,
+	
+	"cookieSecret": "funneh",
+	"sessionResave": true,
+	"sessionSaveUninitialized": true,
+
+	"sqlHost": "localhost",
+	"sqlUser": "teste",
+	"sqlPassword": "Marek1234",
+	"sqlDatabase": "logo",
+	
+	"html":
+	[
+		{"source": "/html/index.html", "url": "/"},
+		{"source": "/html/indexTeste.html", "url": "/teste"},
+		{"source": "/html/login.html", "url": "/login"}
+	]
+}

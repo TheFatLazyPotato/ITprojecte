@@ -2,10 +2,13 @@
 //							DEPENDENCIES
 //----------------------------------------------------------------
 
-import { createRequire } from "node:module"
+import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
 
 const http = require("http");
+const express = require("express");
+const session = require("express-session");
+const expressSql = require("express-mysql-session");
 
 var minimist = require("minimist");
 const fs = require("fs").promises;
@@ -16,9 +19,26 @@ const mysql = require("mysql");
 const __dirname = import.meta.dirname;
 
 //----------------------------------------------------------------
-//							CMD ARGUMENTS
+//							  SETTINGS
 //----------------------------------------------------------------
 
+let settings;
+await fs.readFile(__dirname + "/config.json")
+	.then(set =>
+	{
+		settings = JSON.parse(set);
+		console.log(settings);
+	})
+	.catch(err =>
+	{
+		console.error(err.message);
+		process.exit(1);
+	});
+
+//----------------------------------------------------------------
+//							CMD ARGUMENTS
+//----------------------------------------------------------------
+/*
 //Get cmd arguments
 var args = minimist(process.argv.slice(2), {
 	string: 'host',
@@ -28,12 +48,25 @@ var args = minimist(process.argv.slice(2), {
 });
 
 const port = Number(args.port);
+*/
+//----------------------------------------------------------------
+//							 EXPRESS
+//----------------------------------------------------------------
+
+const app = express();
+
+const sessionMiddleware = session(
+{
+	secret: settings.cookieSecret,
+	resave: true,
+	saveUninitialized: true
+});
 
 //----------------------------------------------------------------
 //							HTML FILES
 //----------------------------------------------------------------
 	
-function addHtmlFileToMap(htmlMap, fileLoc, url)
+async function addHtmlFileToMap(htmlMap, fileLoc, url)
 {
 	fs.readFile(__dirname + fileLoc)
 		.then(cont => 
@@ -48,23 +81,10 @@ function addHtmlFileToMap(htmlMap, fileLoc, url)
 
 //Matching .html files to different url paths
 const htmlFiles = new Map();
-	addHtmlFileToMap(htmlFiles, "/html/index.html", "/");
-	addHtmlFileToMap(htmlFiles, "/html/indexTeste.html", "/teste");
-	addHtmlFileToMap(htmlFiles, "/html/login.html", "/login");
-
-/*
-function addSession(session, client, i)
+for(let i in settings.html)
 {
-	if(session.has(client))
-		return;
-	
-	session.set(client, i);
-	i++;
+	await addHtmlFileToMap(htmlFiles, settings.html[i].source, settings.html[i].url);
 }
-
-const sessions = new Map();
-let nSessions = 0;
-*/
 
 //----------------------------------------------------------------
 //								GET
@@ -129,27 +149,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 {
 	
 	if(urlPath == "/sendFile")
-	{
-		//let bodyData = [];
-		/*
-		req
-			.on('data', chunk =>
-			{
-				bodyData.push(chunk);
-			})
-			.on('end', () =>
-			{
-				bodyData = Buffer.concat(bodyData).toString();
-			});*/
-		/*var imageFile = await fs.open(__dirname + "images/requests/raw/" + urlArgs.name, 'w');
-			.on('error', () =>
-			{
-				res.writeHead(403);
-				res.end("Could not save file on the server.");
-			});
-		imageFile.write(bodyData);
-		imageFIle.close();*/
-		
+	{	
 		const form = formidable({ uploadDir: __dirname + "/images/requests/raw/", 
 			filename: function ({name, ext, part, form})
 			{
@@ -318,10 +318,10 @@ fs.readFile(__dirname + "/db_password.txt")
 
 var sqlConnection = mysql.createConnection(
 {
-	host: 'localhost',
-	user: 'teste',
-	password: 'Marek1234',	
-	database: 'logo'
+	host: settings.sqlHost,
+	user: settings.sqlUser,
+	password: settings.sqlPassword,	
+	database: settings.sqlDatabase
 });
 
 sqlConnection.connect(
@@ -348,8 +348,9 @@ sqlConnection.query("SELECT * FROM users",
 	}
 );
 
+
 const server = http.createServer(requestListener);
   
-server.listen(port, args.host, () => {
-  console.info(`Server is running on http://${args.host}:${port}`);
+server.listen(settings.serverPort, settings.serverHost, () => {
+  console.info(`Server is running on http://${settings.serverHost}:${settings.serverPort}`);
 });

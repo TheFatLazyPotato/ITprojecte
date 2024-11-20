@@ -12,6 +12,8 @@ File Transfer
   https://nodejs.org/en/learn/modules/anatomy-of-an-http-transaction
   https://www.digitalocean.com/community/tutorials/node-fs-js-create-file-read-write
 
+Session handling
+  https://socket.io/how-to/use-with-express-session
 
 
 
@@ -22,5 +24,9 @@ JavaScript libraries used
     https://cartermp.github.io/cheatsheets/minimist
   Formidable:
     https://github.com/node-formidable/formidable
-  mysql:
+  mySQL:
     https://www.npmjs.com/package/mysql
+  Express and related:
+	https://www.npmjs.com/package/express
+	https://www.npmjs.com/package/express-session
+	https://www.npmjs.com/package/express-mysql-session
