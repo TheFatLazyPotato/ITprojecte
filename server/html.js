@@ -5,17 +5,15 @@
 import { createRequire } from "node:module"
 const require = createRequire(import.meta.url);
 
-var minimist = require("minimist");
-
 const http = require("http");
+
+var minimist = require("minimist");
 const fs = require("fs").promises;
 import open from "node:fs";
-
 import formidable from 'formidable';
+const mysql = require("mysql");
 
 const __dirname = import.meta.dirname;
-
-const mysql = require("mysql");
 
 //----------------------------------------------------------------
 //							CMD ARGUMENTS
@@ -52,6 +50,7 @@ function addHtmlFileToMap(htmlMap, fileLoc, url)
 const htmlFiles = new Map();
 	addHtmlFileToMap(htmlFiles, "/html/index.html", "/");
 	addHtmlFileToMap(htmlFiles, "/html/indexTeste.html", "/teste");
+	addHtmlFileToMap(htmlFiles, "/html/login.html", "/login");
 
 /*
 function addSession(session, client, i)
@@ -191,6 +190,44 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 				res.end("<h1>File was sent on the server but cannot be read back<h1>");
 		});
 	}
+	else if(urlPath = "/login")
+	{
+		const form = formidable({});
+		let fields;
+		let files;
+		
+		//TODO
+		[fields, files] = await form.parse(req);
+		
+		sqlConnection.query('SELECT id FROM users WHERE username = ? AND password = ?',
+			[fields.login, fields.password],
+			function(sqlerr, sqlres, sqlfld)
+			{
+				if(sqlerr)
+				{
+					res.setHeader("Content-Type", "text/html");
+					res.writeHead(403);
+					res.end(`<h1> Blad dostepu do bazy danych: ${sqlerr} </h1>`)
+					return;
+				}
+				console.log(sqlres);
+				if(isEmpty(sqlres))
+				{
+					res.setHeader("Content-Type", "text/html");
+					res.writeHead(403);
+					res.end(`<h1> Nie udalo sie zalogowac </h1>`);
+					return;
+				}
+					res.setHeader("Content-Type", "text/html");
+					res.writeHead(401);
+					res.end(`<h1> Zalogowano, id uzytownika: ${sqlres[0].id} </h1>`);
+			});
+		
+		//TODO: Usuwac niebezpieczne znaki z login
+		//TODO: Enkrypcja hasla
+		
+		console.log(fields);
+	}
 	else
 	{
 		res.writeHead(403);
@@ -246,6 +283,15 @@ const requestListener = function (req, res) {
 			break;
 	}
 };
+
+//----------------------------------------------------------------
+//								MISC
+//----------------------------------------------------------------
+
+function isEmpty(obj)
+{
+	return Object.keys(obj).length === 0;
+}
 
 //----------------------------------------------------------------
 //								MAIN
