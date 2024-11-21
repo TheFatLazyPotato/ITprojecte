@@ -104,7 +104,7 @@ input[type=file] {
 
 .button-top {
   border:none;
-  padding: 12px 32px;
+  padding: 12px 24px;
   text-align: center;
   text-decoration: none;
   display:inline-block;
@@ -180,7 +180,7 @@ input[type=file] {
 }
 
 .button-top:hover {
-  background-color: orange;
+  background-color: #aaaaaa;
   color:white;
   cursor: pointer;
 }
@@ -235,6 +235,10 @@ input[type=file] {
   border:none;
 }
 
+.background-lo {
+  background-color:rgb(255, 227, 161)
+}
+
 .background-b {
   background-color:black;
   color: #dddddd;
@@ -256,6 +260,17 @@ input[type=file] {
   }
 }
 
+.register{
+  position: absolute;
+  top: 6px;
+  right: 95px;
+}
+
+.register:hover{
+  background-color:gray;
+  color:orange;
+}
+
 </style>
 <body class="background-g-lg" style="padding:0px;padding-left:0px;margin:0px;">
 
@@ -264,8 +279,8 @@ input[type=file] {
     <img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" class="logo-logo">
   </div>
   <div class="top-bar-item logo-right">
-    <button class="button-top background-w" style="border:3px ORANGE solid" onclick="Login()">Login</button>
-    <button class="button-top background-w" style="border:3px ORANGE solid" onclick="Register()">Register</button>
+    <button class="button-top background-lo" style="padding-left:120px" onclick="Login()">Log In</button>
+    <button class="button-top background-o register" onclick="Register()">Sign Up</button>
   </div>
 </div>
 
@@ -276,7 +291,7 @@ input[type=file] {
       <div>
         <img src="../images/html_images/Landscapo.png" alt="Logo.com" style="float:left; width:auto; height:52px;">
       </div>
-      <form id="uploadForm">
+      <form id="uploadForm" method="post" action="/sendFile?name=teste.png" enctype="multipart/form-data">
       <label for="fileInput" class="button-choose-file background-o">Choose File
       </label>
       <input type="file" id="fileInput" name="file" required/>
