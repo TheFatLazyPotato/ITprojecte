@@ -5,6 +5,7 @@
 	"cookieSecret": "funneh",
 	"sessionResave": true,
 	"sessionSaveUninitialized": true,
+	"sessionExpiration": 86400000,
 
 	"sqlHost": "localhost",
 	"sqlUser": "teste",

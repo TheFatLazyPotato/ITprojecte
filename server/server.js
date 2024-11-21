@@ -8,7 +8,7 @@ const require = createRequire(import.meta.url);
 const http = require("http");
 const express = require("express");
 const session = require("express-session");
-const expressSql = require("express-mysql-session");
+const expressSql = require("express-mysql-session")(session);
 
 var minimist = require("minimist");
 const fs = require("fs").promises;
@@ -27,7 +27,6 @@ await fs.readFile(__dirname + "/config.json")
 	.then(set =>
 	{
 		settings = JSON.parse(set);
-		console.log(settings);
 	})
 	.catch(err =>
 	{
@@ -48,12 +47,48 @@ var args = minimist(process.argv.slice(2), {
 });
 
 const port = Number(args.port);
+
 */
+
+var sqlConnection = mysql.createConnection(
+{
+	host: settings.sqlHost,
+	user: settings.sqlUser,
+	password: settings.sqlPassword,	
+	database: settings.sqlDatabase
+});
+
+sqlConnection.connect(
+	err =>
+	{
+		if(err)
+		{
+			console.error("Cannot connect to database");
+			console.log(err.message);
+			process.exit(1);
+		}
+	}
+);
+
+sqlConnection.query("SELECT * FROM users",
+	(error, result, fields) =>
+	{
+		if(error)
+		{
+			console.error("Cannot read database");
+			process.exit(1);
+		}
+		console.log(result[0]);
+	}
+);
+
+
 //----------------------------------------------------------------
 //							 EXPRESS
 //----------------------------------------------------------------
 
 const app = express();
+const sessionStore = new expressSql({}, sqlConnection);
 
 const sessionMiddleware = session(
 {
@@ -61,6 +96,12 @@ const sessionMiddleware = session(
 	resave: true,
 	saveUninitialized: true
 });
+
+//const httpServer = createServer(app);
+
+app.use(sessionMiddleware);
+
+app.all("/*", (req, res) => {requestListener(req, res);});
 
 //----------------------------------------------------------------
 //							HTML FILES
@@ -297,59 +338,9 @@ function isEmpty(obj)
 //								MAIN
 //----------------------------------------------------------------
 
-let sqlPassword;
-
-/*
-fs.readFile(__dirname + "/db_password.txt")
-	.then(pswrd =>
-	{
-		sqlPassword = pswrd;
-		console.log(pswrd);
-	})
-	.catch(err =>
-	{
-		if(err)
-		{
-			console.error("Can't find database password");
-			process.exit(1);
-		}
-	});
-*/
-
-var sqlConnection = mysql.createConnection(
-{
-	host: settings.sqlHost,
-	user: settings.sqlUser,
-	password: settings.sqlPassword,	
-	database: settings.sqlDatabase
-});
-
-sqlConnection.connect(
-	err =>
-	{
-		if(err)
-		{
-			console.error("Cannot connect to database");
-			console.log(err.message);
-			process.exit(1);
-		}
-	}
-);
-
-sqlConnection.query("SELECT * FROM users",
-	(error, result, fields) =>
-	{
-		if(error)
-		{
-			console.error("Cannot read database");
-			process.exit(1);
-		}
-		console.log(result[0]);
-	}
-);
 
 
-const server = http.createServer(requestListener);
+const server = http.createServer(app);
   
 server.listen(settings.serverPort, settings.serverHost, () => {
   console.info(`Server is running on http://${settings.serverHost}:${settings.serverPort}`);
