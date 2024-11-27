@@ -10,6 +10,8 @@ const express = require("express");
 const session = require("express-session");
 const expressSql = require("express-mysql-session")(session);
 
+const net = require("net");
+
 var minimist = require("minimist");
 const fs = require("fs").promises;
 import open from "node:fs";
@@ -93,6 +95,7 @@ const sessionStore = new expressSql({}, sqlConnection);
 const sessionMiddleware = session(
 {
 	secret: settings.cookieSecret,
+	name: "uniqueSessionID",
 	resave: true,
 	saveUninitialized: true
 });
@@ -133,7 +136,7 @@ for(let i in settings.html)
 
 function handleGetRequest(req, res, urlPath, urlArgs)
 {
-	//Send image
+	//--------------------------IMAGE-----------------------------
 	if(urlPath.startsWith("/images/html_images/"))
 	{
 		res.setHeader("Content-Type", "image/jpg");
@@ -151,7 +154,7 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 			});
 	}
 	
-	//Send JavaScript file
+	//------------------------JAVASCRIPT---------------------------
 	else if(urlPath.startsWith("/scripts/"))
 	{
 		res.setHeader("Content-Type", "text/javascript");
@@ -167,7 +170,7 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 			});
 	}
 	
-	//Send HTML file
+	//--------------------------HTML------------------------------
 	else if(!htmlFiles.has(urlPath))
 	{
 		res.setHeader("Content-Type", "text/html");
@@ -188,7 +191,7 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 
 async function handlePostRequest(req, res, urlPath, urlArgs)
 {
-	
+	//--------------------------FILE-----------------------------
 	if(urlPath == "/sendFile")
 	{	
 		const form = formidable({ uploadDir: __dirname + "/images/requests/raw/", 
@@ -222,6 +225,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 				res.setHeader("Content-Type", "image/png");
 				res.writeHead(201);
 				res.end(im);
+				//tcpClient.write("hihihihih\0");
 			})
 			.catch(err =>
 			{
@@ -231,16 +235,16 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 				res.end("<h1>File was sent on the server but cannot be read back<h1>");
 		});
 	}
+	//--------------------------LOGIN-----------------------------
 	else if(urlPath = "/login")
 	{
 		const form = formidable({});
 		let fields;
 		let files;
 		
-		//TODO
 		[fields, files] = await form.parse(req);
 		
-		sqlConnection.query('SELECT id FROM users WHERE username = ? AND password = ?',
+		sqlConnection.query('SELECT id, username FROM users WHERE username = ? AND password = ?',
 			[fields.login, fields.password],
 			function(sqlerr, sqlres, sqlfld)
 			{
@@ -259,6 +263,16 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 					res.end(`<h1> Nie udalo sie zalogowac </h1>`);
 					return;
 				}
+				if(req.session.loggedIn)
+				{
+					res.setHeader("Content-Type", "text/html");
+					res.writeHead(401);
+					res.end(`<h1> Uzytkownik juz zalogowany,` +
+					 `id uzytownika: ${sqlres[0].id} </h1>`);
+					 return;
+				}
+					req.session.loggedIn = true;
+					req.session.username = sqlres[0].username;
 					res.setHeader("Content-Type", "text/html");
 					res.writeHead(401);
 					res.end(`<h1> Zalogowano, id uzytownika: ${sqlres[0].id} </h1>`);
@@ -345,3 +359,10 @@ const server = http.createServer(app);
 server.listen(settings.serverPort, settings.serverHost, () => {
   console.info(`Server is running on http://${settings.serverHost}:${settings.serverPort}`);
 });
+
+const tcpClient = new net.Socket();
+tcpClient.connect(8078, "localhost", 
+	() =>
+	{
+		tcpClient.write(`testowanko\n`); //Nie wysyla??????
+	});
