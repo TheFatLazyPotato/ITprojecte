@@ -284,7 +284,7 @@ input[type=file] {
     <img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" class="logo-logo">
   </div>
   <div class="top-bar-item logo-right">
-    <button class="button-top background-lo login" style="padding-left:120px" onclick="document.location='login.html'">Log In</button>
+    <button class="button-top background-lo login" style="padding-left:120px" href="/login">Log In</button>
     <button class="button-top background-o register" onclick="Register()">Sign Up</button>
   </div>
 </div>
@@ -299,7 +299,7 @@ input[type=file] {
       <form id="uploadForm" method="post" action="/sendFile?name=teste.png" enctype="multipart/form-data">
       <label for="fileInput" class="button-choose-file background-o">Choose File
       </label>
-      <input type="file" id="fileInput" name="file" required/>
+      <input type="file" id="fileInput" name="#SESSION" required/>
       <button class="button background-o" onclick="uploadFile()">Upload File</button>
       </form>
     </div>
