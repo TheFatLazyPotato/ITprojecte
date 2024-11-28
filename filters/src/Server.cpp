@@ -8,6 +8,7 @@ Server::~Server()
 {}
 
 constexpr static int maxFrameLength = 1024;
+constexpr uint8_t messageSuccess[] = "GOOD";
 
 void session(asio::ip::tcp::socket socket)
 {
@@ -36,6 +37,9 @@ void session(asio::ip::tcp::socket socket)
 				imageData->save_png("teste_mod.png");
 				imageData->assign();
 				// Return success
+				memcpy(message, messageSuccess, sizeof(messageSuccess));
+				memset(&message[sizeof(messageSuccess) / sizeof(uint8_t)], '\0', maxFrameLength - sizeof(messageSuccess) / sizeof(uint8_t));
+				asio::write(socket, asio::buffer(message, maxFrameLength));
 		}
 	}
 	catch (std::exception& e)
