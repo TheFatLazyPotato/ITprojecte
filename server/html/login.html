@@ -23,15 +23,6 @@ html {
   font-family: "Lucida Sans", sans-serif;
 }
 
-[class*="collogo-"] {
-  float: left;
-}
-
-.collogo-2 {width: 16.66%;}
-.collogo-5 {width: 41.66%;}
-.collogo-1 {width: 30%;}
-.collogo-10 {width: 40%;}
-
 
 [class*="col-"] {
   float: left;
@@ -81,12 +72,19 @@ html {
 
 .button {
   border:none;
-  padding: 5px 15px;
+  padding: 5px;
   text-align: center;
   text-decoration: none;
-  display:inline-block;
   font-size: 20px;
   border-radius: 10px;
+  margin-top:0px;
+  width:260px;
+}
+
+.button:hover{
+  background-color: #aaaaaa;
+  color:white;
+  cursor: pointer;
 }
 
 .row::after {
@@ -95,24 +93,40 @@ html {
   display: table;
 }
 
+.form-inputs{
+  border-color:lightgray 1px;
+  padding: 5px;
+  text-decoration: none;
+  font-size: 20px;
+  border-radius: 10px;
+  margin-top:0px;
+  width:260px;
+}
+
+.background-o {
+  background-color:orange;
+  color: white;
+  border: none;
+}
+
+
 </style>
 
 
-<body style="background-color:rgb(197, 197, 197)">
+<body style="background-color:rgb(230, 230, 230)">
   
-  <div>
-    <p style="height:40">LOGO</p>
-  </div>
+  <div> <center>
+    <p style="line-height:10px; font-size:100px; color:orange"><b><i>LOGO</i></b></p>
+  </center> </div>
 
-  <div class="row shadow" style="margin:10%; padding: 10px ; background-color: white; border-radius: 20px; border-color: black 4px;">
+  <div class="row shadow" style=" margin-left:25%; margin-right:25%; min-width:300px; padding: 10px ; background-color: white; border-radius: 20px;">
     <div class="col-7">
-      <form method = "post" action="/login" enctype="multipart/form-data">
-        <label for="login">Login:</label><br>
-        <input type="text" id="login" name="login"><br>
-        <label for="password">Password:</label><br>
-        <input type="password" id="password" name="password"><br><br>
-        <button class="button"> Log In </button>
+
+      <form style="margin-bottom:0px" method = "post" action="/login" enctype="multipart/form-data">
+        <input class="form-inputs" style="margin-top:8px; margin-left:6px" type="text" id="login" name="login" placeholder="login"><br>
+        <input class="form-inputs" style="margin-top:8px; margin-left:6px; margin-bottom:0px" type="password" id="password" name="password" placeholder="password"><br>
       </form>
+      <button class="button background-o" style="margin-top:8px; margin-left:6px"> Log In </button>
     </div>
     <div class="col-5">
      //Dodać tu register i help with login
