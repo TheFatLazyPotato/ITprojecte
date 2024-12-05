@@ -3,6 +3,8 @@
 <head>
 <title>Logo is the way, Logo is the law</title>
 <link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
+<script src="display_upload.js"></script>
+<link rel="stylesheet" href="styles.css">
 </head>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,23 +35,14 @@ html {
   width: 100%;
 }
 
-#display-input {
-  width: 100px;
-  height: 52px;
-  border: 1px solid black;
-  background-position: center;
-  background-size: cover;
-}
-
-
 @media only screen and (min-width: 768px) {
-  .col-1 {width: 8.33%;}
+  .col-1 {width: 0.33%;}
   .col-2 {width: 16.66%;}
   .col-3 {width: 25%;}
   .col-4 {width: 33.33%;}
   .col-5 {width: 41.66%;}
   .col-6 {width: 50%;}
-  .col-7 {width: 58.33%;}
+  .col-7 {width: 66.33%;}
   .col-8 {width: 66.66%;}
   .col-9 {width: 75%;}
   .col-10 {width: 83.33%;}
@@ -300,7 +293,7 @@ input[type=file] {
   <div class="col-7 upload" style="border-radius:10px">
     <div class="background-lg" style="margin-bottom:10px; padding:10px; border-radius:5px;">
       <p style="font-size: 20px; line-height:22px;">Upload your <B>IMAGE</B> here and choose from our many <B>FILTERS</B>.</p>
-      <div id="display-input"></div>
+      <canvas id= "display-input" ></canvas>
       <form id="uploadForm" method="post" action="/sendFile?name=teste.png" enctype="multipart/form-data">
       <label for="fileInput" class="button-choose-file background-o">Choose File
       </label>
