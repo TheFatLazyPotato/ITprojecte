@@ -3,8 +3,8 @@
 <head>
 <title>Logo is the way, Logo is the law</title>
 <link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
-<script src="display_upload.js"></script>
 <link rel="stylesheet" href="styles.css">
+<script src="display_upload.js"></script>
 </head>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -293,7 +293,7 @@ input[type=file] {
   <div class="col-7 upload" style="border-radius:10px">
     <div class="background-lg" style="margin-bottom:10px; padding:10px; border-radius:5px;">
       <p style="font-size: 20px; line-height:22px;">Upload your <B>IMAGE</B> here and choose from our many <B>FILTERS</B>.</p>
-      <canvas id= "display-input" ></canvas>
+      <canvas id="display-input"></canvas>
       <form id="uploadForm" method="post" action="/sendFile?name=teste.png" enctype="multipart/form-data">
       <label for="fileInput" class="button-choose-file background-o">Choose File
       </label>
@@ -332,6 +332,7 @@ input[type=file] {
 <div class="col-12 background-b" style="margin:0;margin-left:0;">
   <h1></h1>
 </div>
+
 </body>
 </html>
 
