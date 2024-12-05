@@ -33,6 +33,13 @@ html {
   width: 100%;
 }
 
+#display-input {
+  width: 100px;
+  height: 52px;
+  border: 1px solid black;
+  background-position: center;
+  background-size: cover;
+}
 
 
 @media only screen and (min-width: 768px) {
@@ -238,8 +245,6 @@ input[type=file] {
   background-color:rgb(255, 227, 161)
 }
 
-.backgroud-red {}
-
 .background-b {
   background-color:black;
   color: #dddddd;
@@ -295,13 +300,11 @@ input[type=file] {
   <div class="col-7 upload" style="border-radius:10px">
     <div class="background-lg" style="margin-bottom:10px; padding:10px; border-radius:5px;">
       <p style="font-size: 20px; line-height:22px;">Upload your <B>IMAGE</B> here and choose from our many <B>FILTERS</B>.</p>
-      <div>
-        <img src="../images/html_images/Landscapo.png" alt="Logo.com" style="float:left; width:auto; height:52px;">
-      </div>
+      <div id="display-input"></div>
       <form id="uploadForm" method="post" action="/sendFile?name=teste.png" enctype="multipart/form-data">
       <label for="fileInput" class="button-choose-file background-o">Choose File
       </label>
-      <input type="file" id="fileInput" name="#SESSION" required/>
+      <input type="file" id="fileInput" name="#SESSION" accept="image/gif, image/jpeg, image/png" required/>
       <button class="button background-o" onclick="uploadFile()">Upload File</button>
       </form>
     </div>
