@@ -1,0 +1,34 @@
+{
+	"filterName": "teste"
+	"options": [
+		{
+			"name": "example slider"
+			"description": "This is a slider example"
+			"type": "slider"
+			"options": {
+				"min": 0
+				"max": 100
+				"step": 0.1
+				"default": 50
+			}
+		},
+		{
+			"name": "example bool"
+			"description": "This is a bool example"
+			"type": "bool"
+			"options": {
+				"default": true
+			}
+		},
+		{
+			"name": "example integer"
+			"description": "This is a integer example"
+			"type": "integer"
+			"options": {
+				"min": "nolimit"
+				"max": "nolimit"
+				"default": 1
+			}
+		}
+	]
+}
