@@ -1,338 +1,166 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Logo is the way, Logo is the law</title>
-<link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
-<link rel="stylesheet" href="styles.css">
-<script src="display_upload.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Logo is the way, Logo is the law</title>
+  <link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
+  <style>
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f7f7f7;
+      color: #333333;
+    }
+
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin: 20px auto;
+      max-width: 1200px;
+      gap: 15px;
+    }
+
+    .col {
+      flex: 1;
+      min-width: 300px;
+    }
+
+    .upload {
+      padding: 20px;
+      background-color: #ffffff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .button-choose-file, .button {
+      display: inline-block;
+      padding: 10px 20px;
+      font-size: 16px;
+      border: none;
+      border-radius: 5px;
+      background: linear-gradient(90deg, #ff6600, #ff8533);
+      background-color: #ff6600;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s ease, background-color 0.3s ease;
+    }
+
+    .button:hover, .button-choose-file:hover, .register:hover, .login:hover {
+      background: linear-gradient(90deg, #333333, #303030);
+      background-color: #333333;
+      color: white;
+      transform: translateY(-2px);
+      transition: transform 0.3s ease, background-color 1s ease;
+    }
+
+    .preview-image {
+      margin-top: 20px;
+      max-width: 100%;
+      height: auto;
+      border: 1px solid #ddd;
+      border-radius: 5px;
+      display: none; /* Hidden until an image is loaded */
+    }
+
+    .settings {
+      padding: 20px;
+      background-color: #f4f4f4;
+      border-radius: 10px;
+      text-align: left;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .top-bar {
+      background-color: #ffffff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px;
+    }
+
+    .top-bar-item {
+      display: inline-block;
+    }
+
+    .login, .register {
+      padding: 8px 15px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    .login {
+      background: #ccc;
+      color: #000;
+    }
+
+    .register {
+      background: #ff6600;
+      color: #fff;
+    }
+
+  </style>
 </head>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-
-img {
-  width: 100%;
-  height: auto
-}
-
-* {
-  box-sizing: border-box;
-}
-
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-html {
-  font-family: "Lucida Sans", sans-serif;
-}
-
-[class*="col-"] {
-  float: left;
-  width: 100%;
-}
-
-@media only screen and (min-width: 768px) {
-  .col-1 {width: 0.33%;}
-  .col-2 {width: 16.66%;}
-  .col-3 {width: 25%;}
-  .col-4 {width: 33.33%;}
-  .col-5 {width: 41.66%;}
-  .col-6 {width: 50%;}
-  .col-7 {width: 66.33%;}
-  .col-8 {width: 66.66%;}
-  .col-9 {width: 75%;}
-  .col-10 {width: 83.33%;}
-  .col-11 {width: 91.66%;}
-  .col-12 {width: 100%;}
-}
-
-@media only screen and (min-width: 768px) {
-  .collogo-1 {width: 8.33%;}
-  .collogo-2 {width: 16.66%;}
-  .collogo-3 {width: 25%;}
-  .collogo-4 {width: 33.33%;}
-  .collogo-5 {width: 41.66%;}
-  .collogo-6 {width: 50%;}
-  .collogo-7 {width: 58.33%;}
-  .collogo-8 {width: 66.66%;}
-  .collogo-9 {width: 75%;}
-  .collogo-10 {width: 83.33%;}
-  .collogo-11 {width: 91.66%;}
-  .collogo-12 {width: 100%;}
-}
-
-@media only screen and (min-width: 1536px) {
-  .collogob-1 {width: 8.33%;}
-  .collogob-2 {width: 16.66%;}
-  .collogob-3 {width: 25%;}
-  .collogob-4 {width: 33.33%;}
-  .collogob-5 {width: 41.66%;}
-  .collogob-6 {width: 50%;}
-  .collogob-7 {width: 58.33%;}
-  .collogob-8 {width: 66.66%;}
-  .collogob-9 {width: 75%;}
-  .collogob-10 {width: 83.33%;}
-  .collogob-11 {width: 91.66%;}
-  .collogob-12 {width: 100%;}
-}
-
-input[type=file] {
-  display:none;
-}
-
-.upload {
-  float: left;
-  padding: 5px;
-  margin-right:0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  line-height: 4px;
-}
-
-.settings {
-  float: left;
-  padding: 5px;
-  margin: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  line-height: 4px;
-}
-
-.button-top {
-  border:none;
-  padding: 12px 24px;
-  text-align: center;
-  text-decoration: none;
-  display:inline-block;
-  font-size: 20px;
-  border-radius: 100px;
-}
-
-.button {
-  border:none;
-  padding: 15px 15px;
-  text-align: center;
-  text-decoration: none;
-  display:inline-block;
-  font-size: 20px;
-  border-radius: 10px;
-}
-
-.button-choose-file {
-  border:none;
-  padding: 15px 15px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 20px;
-  margin-right: 8px;
-  margin-left: 8px;
-  border-radius: 10px;
-}
-
-@media only screen and (min-width: 768px) and (max-width: 820px) {
-  .button {
-    padding: 17px 10px;
-    font-size: 16px;
-  }
-
-  .button-choose-file {
-    padding: 17px 10px;
-    font-size: 16px;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-}
-
-@media only screen and (max-width: 600px) {
-  .button {
-    padding: 20px 8px;
-    font-size: 8px;
-  }
-
-  .button-choose-file {
-    padding: 20px 10px;
-    font-size: 8px;
-    margin-left: 5px;
-    margin-right: 5px;
-  }
-}
-
-.logo-right {
-  float: right;
-}
-
-.logo-left {
-  float: left;
-}
-
-.top-bar {
-  height:66px;
-  padding: 6.4px;
-}
-
-.top-bar-item {
-  height:50px;
-}
-
-.button-top:hover {
-  background-color: #aaaaaa;
-  color:white;
-  cursor: pointer;
-}
-
-.button-choose-file:hover {
-  background-color: #aaaaaa;
-  color:white;
-  cursor: pointer;
-}
-
-.button:hover {
-  background-color: #aaaaaa;
-  color:white;
-  cursor: pointer;
-}
-
-.background-w {
-  background-color:white;
-  color: black;
-  border: none;
-}
-
-.background-lg {
-  background-color:#dddddd;
-  color: black;
-  border: none;
-}
-
-.background-g {
-  background-color:#aaaaaa;
-  color: black;
-  border: none;
-}
-
-.background-o {
-  background-color:orange;
-  color: white;
-  border: none;
-}
-
-.background-g-o-do {
-  background-color:orange;
-  background-image: linear-gradient(orange, rgb(255,120,0));
-  color: white;
-  border:none;
-}
-
-.background-g-lg {
-  background-color:lightgray;
-  background-image: linear-gradient(lightgray, rgb(200,200,200));
-  color: white;
-  border:none;
-}
-
-.background-lo {
-  background-color:rgb(255, 227, 161)
-}
-
-.background-b {
-  background-color:black;
-  color: #dddddd;
-  border: none;
-}
-
-.logo-logo {
-  width:100%;
-  height:100%;
-  border:none;
-  margin-top:0px;
-  padding-top:0px;
-}
-
-@media only screen and (max-width: 436px){
-  .logo-logo{
-    width:0%;
-    height:0%;
-  }
-}
-
-.register{
-  position: absolute;
-  top: 6px;
-  right: 95px;
-  box-shadow: 1px 0px 2px rgba(0,0,0,0.24);
-}
-
-.register:hover{
-  background-color:gray;
-  color:orange;
-}
-
-.login{
-  box-shadow: 1px 0px 2px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24);
-}
-
-
-</style>
-<body class="background-g-lg" style="padding:0px;padding-left:0px;margin:0px;">
-
-<div class="row top-bar background-w">
-  <div class="top-bar-item" style="float:left;">
-    <img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" class="logo-logo">
-  </div>
-  <div class="top-bar-item logo-right">
-    <button class="button-top background-lo login" style="padding-left:120px" onclick="document.location='/login'">Log In</button>
-    <button class="button-top background-o register" onclick="Register()">Sign Up</button>
-  </div>
-</div>
-
-<div class="row" style="margin-left:5%; margin-right:5%; margin-bottom:20px; margin-top:10px;">
-  <div class="col-7 upload" style="border-radius:10px">
-    <div class="background-lg" style="margin-bottom:10px; padding:10px; border-radius:5px;">
-      <p style="font-size: 20px; line-height:22px;">Upload your <B>IMAGE</B> here and choose from our many <B>FILTERS</B>.</p>
-      <canvas id="display-input"></canvas>
-      <form id="uploadForm" method="post" action="/sendFile?name=teste.png" enctype="multipart/form-data">
-      <label for="fileInput" class="button-choose-file background-o">Choose File
-      </label>
-      <input type="file" id="fileInput" name="#SESSION" accept="image/gif, image/jpeg, image/png" required/>
-      <button class="button background-o" onclick="uploadFile()">Upload File</button>
-      </form>
+<body>
+  <div class="top-bar">
+    <div class="top-bar-item">
+      <img src="../images/html_images/Logo_LOGO.jpg" alt="Logo.com" style="width:100px;height:auto;">
     </div>
-    <img class="center-fit" src="../images/html_images/Landscapo.png" alt="Landscapo.png" style="width:100%;height:100%;">
+    <div class="top-bar-item" style="float:right;">
+      <button class="login" onclick="document.location='/login'">Log In</button>
+      <button class="register" onclick="Register()">Sign Up</button>
+    </div>
   </div>
 
-  <div class="col-1 background:none">
-    <p></p>
+  <div class="row">
+    <div class="col upload">
+      <h2>Upload your Image</h2>
+      <p>Select an image to upload:</p>
+      <form id="uploadForm" method="post" action="/sendFile" enctype="multipart/form-data">
+        <label for="fileInput" class="button-choose-file">Choose File</label>
+        <input type="file" id="fileInput" name="file" accept="image/*" required style="display:none;">
+        <button type="button" class="button">Upload</button>
+      </form>
+      <img id="preview" class="preview-image" alt="Selected Image Preview" src="../images/html_images/Landscapo.png" style="display: block;">
+    </div>
+
+    <div class="col settings">
+      <h2>Settings:</h2>
+      <p><b>Filter 1:</b> Adjust the settings for Filter 1.</p>
+      <button class="button">Option 1</button>
+      <button class="button">Option 2</button>
+      <button class="button">Apply</button>
+      <p><b>Filter 2:</b> Adjust the settings for Filter 2.</p>
+      <button class="button">Option 1</button>
+      <button class="button">Option 2</button>
+      <button class="button">Apply</button>
+    </div>
   </div>
 
-  <div class="col-4 settings background-lg">
-    <p></p>
-    <h2>Settings:</h2>
-    <p><b>Filter1:</b></p>
-    <p>Description</p>
-    <button class="button">Option1</button>
-    <button class="button">Option2</button>
-    <button class="button">Apply</button>
-    <p><b>Filter2:</b></p>
-    <p>Description</p>
-    <button class="button">Option1</button>
-    <button class="button">Option2</button>
-    <button class="button">Apply</button>
+  <footer style="background-color: #333; color: #fff; text-align: center; padding: 10px;">
+    <p>Logo.com &copy; 2024</p>
+  </footer>
 
-  </div>  
+  <script>
+    const fileInput = document.getElementById('fileInput');
+    const preview = document.getElementById('preview');
 
-<!-- <div class="col-71">
-  <img class="center-fit" src="../images/html_images/Landscapo.png" alt="Landscapo.png" style="width:100%;height:100%;">
-</div> -->
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
 
-</div>
-<div class="col-12 background-b" style="margin:0;margin-left:0;">
-  <h1></h1>
-</div>
+        preview.src = fileURL;
 
+        preview.style.display = 'block';
+      }
+    });
+  </script>
 </body>
 </html>
-
