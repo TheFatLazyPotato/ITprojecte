@@ -1,33 +1,57 @@
 {
-	"filterName": "teste"
+	"filterName": "teste",
 	"options": [
 		{
-			"name": "example slider"
-			"description": "This is a slider example"
-			"type": "slider"
+			"name": "example slider",
+			"description": "This is a slider example",
+			"type": "slider",
 			"options": {
-				"min": 0
-				"max": 100
-				"step": 0.1
+				"min": 0,
+				"max": 100,
+				"step": 0.1,
 				"default": 50
 			}
 		},
 		{
-			"name": "example bool"
-			"description": "This is a bool example"
-			"type": "bool"
+			"name": "example bool",
+			"description": "This is a bool example",
+			"type": "bool",
 			"options": {
 				"default": true
 			}
 		},
 		{
-			"name": "example integer"
-			"description": "This is a integer example"
-			"type": "integer"
+			"name": "example integer",
+			"description": "This is a integer example",
+			"type": "integer",
 			"options": {
-				"min": "nolimit"
-				"max": "nolimit"
+				"min": "nolimit",
+				"max": "nolimit",
 				"default": 1
+			}
+		},
+		{
+			"name": "example float",
+			"description": "This is a float example",
+			"type": "float",
+			"options": {
+				"min": 0,
+				"max": 100,
+				"step": 0.1,
+				"default": 50
+			}
+		},
+		{
+			"name": "list example",
+			"description": "This is a list example",
+			"type": "list",
+			"options": {
+				"values": [
+					"element 1",
+					"element 2",
+					"element 3",
+					"element 5"
+				]
 			}
 		}
 	]
