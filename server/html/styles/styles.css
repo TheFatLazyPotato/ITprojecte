@@ -166,10 +166,11 @@ body {
   font-size: 16px;
   outline: none;
   transition: background 0.2s, box-shadow 0.2s;
+  opacity: 0.7;
 }
 
 .number-input:hover {
-  background: #c1c1c1;
+  opacity: 1;
 }
 
 .number-input:focus {
@@ -188,10 +189,11 @@ body {
   outline: none;
   transition: background 0.2s, box-shadow 0.2s;
   cursor: pointer;
+  opacity: 0.7;
 }
 
 .select-input:hover {
-  background: #c1c1c1;
+  opacity: 1;
 }
 
 .select-input:focus {
