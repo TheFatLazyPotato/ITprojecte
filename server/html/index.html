@@ -114,6 +114,7 @@
       outline: none;
       -webkit-transition: .2s;
       transition: opacity .2s;
+      border-radius: 4px;
     }
     .slider::-webkit-slider-thumb {
       -webkit-appearance: none;
@@ -122,9 +123,87 @@
       height: 20px;
       background: #ff6600;
       cursor: pointer;
+      border-radius: 4px;
     }
     .slider:hover{
       opacity: 1;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .checkbox {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #d3d3d3;
+      border-radius: 4px;
+      cursor: pointer;
+      outline: none;
+      transition: background 0.2s;
+      opacity: 0.7;
+      margin-bottom: 0px;
+    }
+
+    .checkbox:checked {
+      background: #ff6600;
+    }
+
+    .checkbox-label {
+      margin-left: 8px;
+      font-size: 16px;
+      color: #333;
+    }
+
+    .checkbox:hover {
+      opacity: 1;
+    }
+
+    .number-input {
+      margin-top:5px;
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100px;
+      padding: 2px;
+      background: #d3d3d3;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      outline: none;
+      transition: background 0.2s, box-shadow 0.2s;
+    }
+
+    .number-input:hover {
+      background: #c1c1c1;
+    }
+
+    .number-input:focus {
+      box-shadow: 0 0 5px rgba(136, 136, 136, 0.7);
+    }
+
+    .select-input {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 200px;
+      padding: 2px;
+      background: #d3d3d3;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 16px;
+      outline: none;
+      transition: background 0.2s, box-shadow 0.2s;
+      cursor: pointer;
+    }
+
+    .select-input:hover {
+      background: #c1c1c1;
+    }
+
+    .select-input:focus {
+      box-shadow: 0 0 5px rgba(136, 136, 136, 0.7);
     }
 
   </style>
@@ -235,6 +314,7 @@
                   input = document.createElement('input');
                   input.type = 'checkbox';
                   input.checked = option.options.default;
+                  input.className = 'checkbox';
                   break;
 
               case 'integer':
@@ -243,6 +323,7 @@
                   input.value = option.options.default;
                   input.min = option.options.min === 'nolimit' ? '' : option.options.min;
                   input.max = option.options.max === 'nolimit' ? '' : option.options.max;
+                  input.className = 'number-input';
                   break;
 
               case 'float':
@@ -252,10 +333,12 @@
                   input.min = option.options.min;
                   input.max = option.options.max;
                   input.value = option.options.default;
+                  input.className = 'number-input';
                   break;
 
               case 'list':
                   input = document.createElement('select');
+                  input.className = 'select-input';
                   option.options.values.forEach(value => {
                       const optionElement = document.createElement('option');
                       optionElement.value = value;
