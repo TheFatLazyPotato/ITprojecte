@@ -1,9 +1,5 @@
 {
-<<<<<<< Updated upstream
 	"filterName": "teste",
-=======
-	"filterName": "teste" ,
->>>>>>> Stashed changes
 	"options": [
 		{
 			"name": "example slider",

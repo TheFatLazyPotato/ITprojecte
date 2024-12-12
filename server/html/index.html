@@ -105,6 +105,28 @@
       color: #fff;
     }
 
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      max-width: 200px;
+      opacity: 0.7;
+      background: #d3d3d3;
+      outline: none;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 20px;
+      height: 20px;
+      background: #ff6600;
+      cursor: pointer;
+    }
+    .slider:hover{
+      opacity: 1;
+    }
+
   </style>
 </head>
 <body>
@@ -155,75 +177,105 @@
     });
   </script>
 
-  <script>
-    const jsonFilePath = '../filters/teste.json';
+<script>
+  // Path to your JSON file
+  const jsonFilePath = '../filters/teste.json';
 
-    fetch(jsonFilePath)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-            return response.json();
-        })
-        .then(data => {
-            generateInputs(data);
-        })
-        .catch(error => {
-            console.error('Error fetching the JSON file:', error);
-        });
+  // Fetch the JSON file
+  fetch(jsonFilePath)
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.json();
+      })
+      .then(data => {
+          console.log(data); // For debugging purposes
+          generateInputs(data);
+      })
+      .catch(error => {
+          console.error('Error fetching the JSON file:', error);
+      });
 
-    function generateInputs(json) {
-        const container = document.getElementById('inputs');
+  // Function to dynamically generate inputs based on JSON
+  function generateInputs(json) {
+      const container = document.getElementById('inputs');
 
-        const filterTitle = document.createElement('h2');
-        filterTitle.textContent = json.filterName;
-        filterTitle.marginBottom = "0px";
-        container.appendChild(filterTitle);
+      // Create a title for the filter name
+      const filterTitle = document.createElement('h2');
+      filterTitle.textContent = json.filterName;
+      container.appendChild(filterTitle);
 
-        json.options.forEach(option => {
-            const wrapper = document.createElement('div');
-            wrapper.style.marginBottom = '0px';
+      // Loop through the options to create inputs
+      json.options.forEach(option => {
+          // Create a wrapper for each option
+          const wrapper = document.createElement('div');
+          wrapper.style.marginBottom = '20px';
 
-            const label = document.createElement('label');
-            label.textContent = `${option.name}: ${option.description}`;
-            label.style.display = 'block';
-            wrapper.appendChild(label);
+          // Create a label for the input
+          const label = document.createElement('label');
+          label.textContent = `${option.name}: ${option.description}`;
+          label.style.display = 'block';
+          wrapper.appendChild(label);
 
-            let input;
-            switch (option.type) {
-                case 'slider':
-                    input = document.createElement('input');
-                    input.type = 'range';
-                    input.min = option.options.min;
-                    input.max = option.options.max;
-                    input.step = option.options.step;
-                    input.value = option.options.default;
-                    break;
+          // Generate input based on the type
+          let input;
+          switch (option.type) {
+              case 'slider':
+                  input = document.createElement('input');
+                  input.type = 'range';
+                  input.min = option.options.min;
+                  input.max = option.options.max;
+                  input.step = option.options.step;
+                  input.value = option.options.default;
+                  input.className = 'slider';
+                  break;
 
-                case 'bool':
-                    input = document.createElement('input');
-                    input.type = 'checkbox';
-                    input.checked = option.options.default;
-                    break;
+              case 'bool':
+                  input = document.createElement('input');
+                  input.type = 'checkbox';
+                  input.checked = option.options.default;
+                  break;
 
-                case 'integer':
-                    input = document.createElement('input');
-                    input.type = 'number';
-                    input.value = option.options.default;
-                    input.min = option.options.min === 'nolimit' ? '' : option.options.min;
-                    input.max = option.options.max === 'nolimit' ? '' : option.options.max;
-                    break;
+              case 'integer':
+                  input = document.createElement('input');
+                  input.type = 'number';
+                  input.value = option.options.default;
+                  input.min = option.options.min === 'nolimit' ? '' : option.options.min;
+                  input.max = option.options.max === 'nolimit' ? '' : option.options.max;
+                  break;
 
-                default:
-                    console.warn(`Unknown type: ${option.type}`);
-                    return;
-            }
+              case 'float':
+                  input = document.createElement('input');
+                  input.type = 'number';
+                  input.step = option.options.step;
+                  input.min = option.options.min;
+                  input.max = option.options.max;
+                  input.value = option.options.default;
+                  break;
 
-            wrapper.appendChild(input);
+              case 'list':
+                  input = document.createElement('select');
+                  option.options.values.forEach(value => {
+                      const optionElement = document.createElement('option');
+                      optionElement.value = value;
+                      optionElement.textContent = value;
+                      input.appendChild(optionElement);
+                  });
+                  break;
 
-            container.appendChild(wrapper);
-        });
-    }
+              default:
+                  console.warn(`Unknown type: ${option.type}`);
+                  return; // Skip unknown types
+          }
+
+          // Append input to the wrapper
+          wrapper.appendChild(input);
+
+          // Append the wrapper to the container
+          container.appendChild(wrapper);
+      });
+  }
 </script>
 </body>
 </html>
