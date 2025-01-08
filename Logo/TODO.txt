@@ -1,0 +1,4 @@
+Sesje
+Logowanie
+Filtry
+Zmiana Preview na plik na serwerze po uploadzie
