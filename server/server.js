@@ -12,6 +12,8 @@ const expressSql = require("express-mysql-session")(session);
 
 const net = require("net");
 
+const uid = require("uid-safe");
+
 var minimist = require("minimist");
 const fs = require("fs").promises;
 import open from "node:fs";
@@ -56,6 +58,7 @@ const port = Number(args.port);
 var sqlConnection = mysql.createConnection(
 {
 	host: settings.sqlHost,
+	port: settings.sqlPort,
 	user: settings.sqlUserData,
 	password: settings.sqlPasswordData,	
 	database: settings.sqlDatabase
@@ -78,7 +81,7 @@ sqlConnection.query("SELECT * FROM users",
 	{
 		if(error)
 		{
-			console.error("Cannot read regular database");
+			console.error("Regular - Cannot read database");
 			process.exit(1);
 		}
 		console.log(result[0]);
@@ -95,14 +98,17 @@ const app = express();
 const mySqlSessionOptions =
 {
 	host: settings.sqlHost,
+	port: settings.sqlPort,
 	user: settings.sqlUserSession,
 	password: settings.sqlPasswordSession,
 	database: settings.sqlDatabase
 }
 
+let sessionStore = {};
+
 try
 {
-	const sessionStore = new expressSql(mySqlSessionOptions);
+	sessionStore = new expressSql(mySqlSessionOptions);
 }
 catch (err)
 {
@@ -113,16 +119,36 @@ catch (err)
 const sessionMiddleware = session(
 {
 	secret: settings.cookieSecret,
-	name: "uniqueSessionID",
-	resave: true,
-	saveUninitialized: true
+	//name: "uniqueSessionID",
+	resave: false,
+	saveUninitialized: false,
+	store: sessionStore,
+	cookie: {
+		path: '/',
+		httpOnly: false,
+		secure: false,
+		maxAge: settings.sessionExpiration
+		}
+
+	/*genid: function(req)
+	{
+		uid(18, function(err, str)
+		{
+			if (err) throw err;
+			return str;
+		})
+	}*/
 });
 
 //const httpServer = createServer(app);
 
 app.use(sessionMiddleware);
 
-app.all("/*", (req, res) => {requestListener(req, res);});
+app.all("/*", (req, res) => 
+{
+	req.session.init = "init";
+	requestListener(req, res);
+});
 
 //----------------------------------------------------------------
 //							HTML FILES
@@ -180,7 +206,43 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 			.then(scrpt => 
 			{
 				res.writeHead(200);
+				res.end(scrpt);
+				console.log(`\tSent JavaScript: ${urlPath}`);
 				//res.end(scrpt.replace("#HOST", `http://${host}:${port}`));
+			})
+			.catch(err =>
+			{
+				res.writeHead(404);
+			});
+	}
+	
+	//--------------------------JSON-------------------------------
+	else if(urlPath.startsWith("/filters/"))
+	{
+		res.setHeader("Content-Type", "text/json");
+		fs.readFile(__dirname + urlPath)
+			.then(filt => 
+			{
+				res.writeHead(200);
+				res.end(filt);
+				console.log(`\tSent json: ${urlPath}`);
+			})
+			.catch(err =>
+			{
+				res.writeHead(404);
+			});
+	}
+	
+	//--------------------------CSS-------------------------------
+	else if(urlPath.startsWith("/html/styles/"))
+	{
+		res.setHeader("Content-Type", "text/css");
+		fs.readFile(__dirname + urlPath)
+			.then(f => 
+			{
+				res.writeHead(200);
+				res.end(f);
+				console.log(`\tSent css: ${urlPath}`);
 			})
 			.catch(err =>
 			{
@@ -200,6 +262,7 @@ function handleGetRequest(req, res, urlPath, urlArgs)
 		res.setHeader("Content-Type", "text/html");
 		res.writeHead(200);
 		res.end(htmlFiles.get(urlPath));
+		console.log(`\tSent html: ${urlPath}`);
 	}
 }
 
@@ -215,9 +278,15 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		const form = formidable({ uploadDir: __dirname + "/images/requests/raw/", 
 			filename: function ({name, ext, part, form})
 			{
-				return urlArgs.name;
+				req.session.image = {};
+				uid(18, function(err, string)
+				{
+					if (err) throw err;
+					req.session.image = string;
+				});
+				return req.session.image;
 			},
-			filter: function ({name, oroginalFilename, mimetype})
+			filter: function ({name, originalFilename, mimetype})
 			{
 				return mimetype && mimetype.includes("image");
 			}
@@ -226,8 +295,12 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		let files;
 		try
 		{
+			// Read image data and create file in correct folder
 			[fields, files] = await form.parse(req);
 			console.log("File created");
+			
+			// Add image data to session
+			
 		}
 		catch (err)
 		{
@@ -293,7 +366,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 				{
 					res.setHeader("Content-Type", "text/html");
 					res.writeHead(401);
-					res.end(`<h1> Uzytkownik juz zalogowany,` +
+					res.end(`<h1> Uzytkownik juz zalogowany, ` +
 					 `id uzytownika: ${sqlres[0].id} </h1>`);
 					 return;
 				}
@@ -302,6 +375,12 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 					res.setHeader("Content-Type", "text/html");
 					res.writeHead(401);
 					res.end(`<h1> Zalogowano, id uzytownika: ${sqlres[0].id} </h1>`);
+					
+					console.log(req.session.id);
+					
+					req.session.save(function(err) {
+						if (err) throw err
+					})
 			});
 		
 		//TODO: Usuwac niebezpieczne znaki z login
@@ -309,6 +388,28 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		
 		console.log(fields);
 	}
+	
+	//--------------------------LOGOUT----------------------------
+	else if(urlPath = "/logout")
+	{
+		if(req.session.loggedIn == true)
+		{
+			store.destroy(req.session.id, function(err)
+			{
+				if (err) throw err;
+			});
+			res.setHeader("Content-Type", "text/html");
+			res.writeHead(401);
+			res.end("<h1> Wylogowano </h1>");
+		}
+		else
+		{
+			res.setHeader("Content-Type", "text/html");
+			res.writeHead(403);
+			res.end("<h1> Nie jestes zalogowany </h1>");
+		}	
+	}
+		
 	else
 	{
 		res.writeHead(403);

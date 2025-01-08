@@ -24,9 +24,11 @@ JavaScript libraries used
     https://cartermp.github.io/cheatsheets/minimist
   Formidable:
     https://github.com/node-formidable/formidable
-  mySQL:
-    https://www.npmjs.com/package/mysql
+  mySQL2:
+    https://www.npmjs.com/package/mysql2
   Express and related:
 	https://www.npmjs.com/package/express
 	https://www.npmjs.com/package/express-session
 	https://www.npmjs.com/package/express-mysql-session
+  uid-safe:
+	https://www.npmjs.com/package/uid-safe
