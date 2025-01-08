@@ -16,7 +16,7 @@ var minimist = require("minimist");
 const fs = require("fs").promises;
 import open from "node:fs";
 import formidable from 'formidable';
-const mysql = require("mysql");
+const mysql = require("mysql2");
 
 const __dirname = import.meta.dirname;
 
@@ -29,6 +29,7 @@ await fs.readFile(__dirname + "/config.json")
 	.then(set =>
 	{
 		settings = JSON.parse(set);
+		console.log(settings);
 	})
 	.catch(err =>
 	{
@@ -55,8 +56,8 @@ const port = Number(args.port);
 var sqlConnection = mysql.createConnection(
 {
 	host: settings.sqlHost,
-	user: settings.sqlUser,
-	password: settings.sqlPassword,	
+	user: settings.sqlUserData,
+	password: settings.sqlPasswordData,	
 	database: settings.sqlDatabase
 });
 
@@ -65,7 +66,7 @@ sqlConnection.connect(
 	{
 		if(err)
 		{
-			console.error("Cannot connect to database");
+			console.error("Regular - Cannot connect to database");
 			console.log(err.message);
 			process.exit(1);
 		}
@@ -77,7 +78,7 @@ sqlConnection.query("SELECT * FROM users",
 	{
 		if(error)
 		{
-			console.error("Cannot read database");
+			console.error("Cannot read regular database");
 			process.exit(1);
 		}
 		console.log(result[0]);
@@ -90,7 +91,24 @@ sqlConnection.query("SELECT * FROM users",
 //----------------------------------------------------------------
 
 const app = express();
-const sessionStore = new expressSql({}, sqlConnection);
+
+const mySqlSessionOptions =
+{
+	host: settings.sqlHost,
+	user: settings.sqlUserSession,
+	password: settings.sqlPasswordSession,
+	database: settings.sqlDatabase
+}
+
+try
+{
+	const sessionStore = new expressSql(mySqlSessionOptions);
+}
+catch (err)
+{
+	console.error("Express Session - Cannot connect to database");
+	process.exit(1);
+}
 
 const sessionMiddleware = session(
 {
@@ -234,6 +252,14 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 				res.writeHead(403);
 				res.end("<h1>File was sent on the server but cannot be read back<h1>");
 		});
+		
+		await tcpClient.write("/raw/teste.png".padEnd(1024,'\0'));
+		tcpClient.on('data',
+			data =>
+			{
+				console.log(data);
+			}
+		)
 	}
 	//--------------------------LOGIN-----------------------------
 	else if(urlPath = "/login")
@@ -364,5 +390,5 @@ const tcpClient = new net.Socket();
 tcpClient.connect(8078, "localhost", 
 	() =>
 	{
-		tcpClient.write(`testowanko\n`); //Nie wysyla??????
+		tcpClient.write("teste".padEnd(1024,'\0'));
 	});
