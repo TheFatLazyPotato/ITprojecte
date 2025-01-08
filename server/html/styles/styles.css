@@ -199,3 +199,18 @@ body {
 .select-input:focus {
   box-shadow: 0 0 5px rgba(136, 136, 136, 0.7);
 }
+
+.log_btn {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  background: #ff7f50;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+.log_btn:hover {
+  background: #e06c3b;
+}
