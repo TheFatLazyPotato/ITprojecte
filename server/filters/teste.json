@@ -2,6 +2,7 @@
 	"filterName": "teste",
 	"options": [
 		{
+			"id": "slider1",
 			"name": "example slider",
 			"description": "This is a slider example",
 			"type": "slider",
@@ -13,6 +14,19 @@
 			}
 		},
 		{
+			"id": "slider2",
+			"name": "example slider 2",
+			"description": "This is a slider example",
+			"type": "slider",
+			"options": {
+				"min": 0,
+				"max": 100,
+				"step": 0.1,
+				"default": 50
+			}
+		},
+		{
+			"id": "bool1",
 			"name": "example bool",
 			"description": "This is a bool example",
 			"type": "bool",
@@ -21,6 +35,7 @@
 			}
 		},
 		{
+			"id": "int1",
 			"name": "example integer",
 			"description": "This is a integer example",
 			"type": "integer",
@@ -31,6 +46,7 @@
 			}
 		},
 		{
+			"id": "float1",
 			"name": "example float",
 			"description": "This is a float example",
 			"type": "float",
@@ -42,6 +58,7 @@
 			}
 		},
 		{
+			"id": "list1",
 			"name": "list example",
 			"description": "This is a list example",
 			"type": "list",
