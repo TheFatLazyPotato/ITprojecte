@@ -1,138 +1,105 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>Log Logo into Login</title>
-<link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login & Register</title>
+    <link rel="icon" type="image/x-icon" href="../images/html_images/favicon.jpg">
+    <link rel="stylesheet" href="html/styles/styles.css">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            max-width: 800px;
+            width: 100%;
+        }
+        
+        .form-container {
+            flex: 1;
+            padding: 30px;
+        }
+        
+        h2 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: #444;
+        }
+        
+        .form-group {
+            margin-bottom: 15px;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-top: 5px;
+        }
+        
+        .logo {
+            background: #ff7f50;
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 48px;
+            font-weight: bold;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+            .logo {
+                padding: 20px;
+                font-size: 36px;
+            }
+        }
+    </style>
 </head>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-
-* {
-  box-sizing: border-box;
-}
-
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-html {
-  font-family: "Lucida Sans", sans-serif;
-}
-
-
-[class*="col-"] {
-  float: left;
-}
-
-.col-1 {width: 8.33%;}
-.col-2 {width: 16.66%;}
-.col-3 {width: 25%;}
-.col-4 {width: 33.33%;}
-.col-5 {width: 41.66%;}
-.col-6 {width: 50%;}
-.col-7 {width: 58.33%;}
-.col-8 {width: 66.66%;}
-.col-9 {width: 75%;}
-.col-10 {width: 83.33%;}
-.col-11 {width: 91.66%;}
-.col-12 {width: 100%;}
-.col-71 {width: 57.33%;}
-.col-100 {width: 1%;}
-.col-22 {width: 16.66%;}
-.col-52 {width: 41.66%;}
-
-
-@media only screen and (max-width: 768px) {
-  /* For mobile phones: */
-  [class*="col-"] {
-    width: 100%;
-  }
-  .collogo-2 {width: 33.33%;}
-  .collogo-5 {width: 33.33%;}
-
-}
-
-.logomargin {
-  margin: 0px;
-  margin-top: 0px;
-  margin-bottom: 0px;
-  margin-right: 0px;
-  background-color:lightgray;
-  padding-top: 50px;
-
-}
-
-.shadow{
-  box-shadow: 1px 0px 2px rgba(0,0,0,0.12), 0px 1px 2px rgba(0,0,0,0.24), -1px 0px 2px rgba(0,0,0,0.12), 0px -1px 2px rgba(0,0,0,0.24) 
-}
-
-.button {
-  border:none;
-  padding: 5px;
-  text-align: center;
-  text-decoration: none;
-  font-size: 20px;
-  border-radius: 10px;
-  margin-top:0px;
-  width:260px;
-}
-
-.button:hover{
-  background-color: #aaaaaa;
-  color:white;
-  cursor: pointer;
-}
-
-.row::after {
-  content: "";
-  clear: both;
-  display: table;
-}
-
-.form-inputs{
-  border-color:lightgray 1px;
-  padding: 5px;
-  text-decoration: none;
-  font-size: 20px;
-  border-radius: 10px;
-  margin-top:0px;
-  width:260px;
-}
-
-.background-o {
-  background-color:orange;
-  color: white;
-  border: none;
-}
-
-
-</style>
-
-
-<body style="background-color:rgb(230, 230, 230)">
-  
-  <div> <center>
-    <p style="line-height:10px; font-family:'Arial'; font-size:100px; color:orange"><b><i><u>LOGO</u></i></b></p>
-  </center> </div>
-
-  <div class="row shadow" style=" margin-left:25%; margin-right:25%; min-width:300px; padding: 10px ; background-color: white; border-radius: 20px;">
-    <div class="col-7">
-
-      <form style="margin-bottom:0px" method = "post" action="/login" enctype="multipart/form-data">
-        <input class="form-inputs" style="margin-top:8px; margin-left:6px" type="text" id="login" name="login" placeholder="login"><br>
-        <input class="form-inputs" style="margin-top:8px; margin-left:6px; margin-bottom:0px" type="password" id="password" name="password" placeholder="password"><br>
-        <button class="button background-o" style="margin-top:8px; margin-left:6px"> Log In </button>
-      </form>
+<body>
+    <div class="container">
+        <div class="logo"><u><i>LOGO</i></u></div>
+        <div class="form-container">
+            <h2>Login</h2>
+            <form method="post" action="/login">
+                <div class="form-group">
+                    <input type="text" name="login" placeholder="Login" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                </div>
+                <button type="submit" class="log_btn">Log In</button>
+            </form>
+        </div>
+        <div class="form-container">
+            <h2>Register</h2>
+            <form method="post" action="/register">
+                <div class="form-group">
+                    <input type="text" name="login" placeholder="Login" required>
+                    <input type="password" name="password" placeholder="Password" required>
+                    <input type="confpassword" name="confpassword" placeholder="Confirm Password" required>
+                </div>
+                <button type="submit" class="log_btn">Register</button>
+            </form>
+        </div>
     </div>
-    <div class="col-5">
-     //Dodać tu register i help with login
-    </div>
-  </div>
-
 </body>
 </html>
-
