@@ -311,23 +311,22 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			}
 		});
 		
+		try
+		{
 		let fields;
 		let files;
 			// Read image data and create file in correct folder
 			//console.log(form.IncomingForm.options.filename.toString());
 			
-			[fields, files] = await form.parse(req)
-				.then( () =>
-			{
-				console.log("File created");
-				imageConnection.write(req.session.id.padEnd(1024, '\0'));
-				imageConnection.on('data',
-					data =>
-					{
-						console.log(data);
-					}
-				)
-			});
+			[fields, files] = await form.parse(req);
+			console.log("File created");
+			imageConnection.write(req.session.id.padEnd(1024, '\0'));
+			imageConnection.on('data',
+				data =>
+				{
+					console.log(data);
+				}
+			)
 			
 			form.on("end", () =>
 			{
@@ -347,14 +346,14 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			});
 			
 		
-		/*
+		}
 		catch (err)
 		{
 			console.error(err);
 			WriteHeaderPlain(res, err.httpCode || 400, String(err));
 			return;
 		}
-		*/
+		
 	}
 	//--------------------------LOGIN-----------------------------
 	else if(urlPath == "/login")

@@ -1,5 +1,6 @@
 #pragma once
 #include <thread>
+
 class IThread
 {
 	enum Status

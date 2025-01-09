@@ -3,6 +3,7 @@
 
 IThread::IThread() : status(IThread::Status::STOPPED), thr(nullptr)
 {
+
 }
 
 
