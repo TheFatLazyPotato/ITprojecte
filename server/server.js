@@ -304,9 +304,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		}
 		catch (err)
 		{
-			res.setHeader("Content-Type", "text/plain");
-			res.writeHead(err.httpCode || 400);
-			res.end(String(err));
+			WriteHeaderPlain(res, err.httpCode || 400, String(err));
 			return;
 		}
 		
@@ -321,9 +319,8 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			.catch(err =>
 			{
 				console.error(err);
-				res.setHeader("Content-Type", "text/html");
-				res.writeHead(403);
-				res.end("<h1>File was sent on the server but cannot be read back<h1>");
+
+				WriteHeaderPlain(res, 500, "File was sent on the server but cannot be read back")
 		});
 		
 		await tcpClient.write("/raw/teste.png".padEnd(1024,'\0'));
@@ -349,31 +346,24 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			{
 				if(sqlerr)
 				{
-					res.setHeader("Content-Type", "text/plain");
-					res.writeHead(403);
-					res.end("Blad dostepu do bazy danych")
+					WriteHeaderPlain(res, 500, "Blad dostepu do bazy danych")
 					return;
 				}
 				console.log(sqlres);
 				if(isEmpty(sqlres))
 				{
-					res.setHeader("Content-Type", "text/plain");
-					res.writeHead(403);
-					res.end("Nie udalo sie zalogowac");
+					WriteHeaderPlain(res, 403, "Nie udalo sie zalogowac");
 					return;
 				}
 				if(req.session.loggedIn)
 				{
-					res.setHeader("Content-Type", "text/plain");
-					res.writeHead(401);
-					res.end("Uzytkownik juz zalogowany");
+					WriteHeaderPlain(res, 403, "Uzytkownik juz zalogowany");
 					 return;
 				}
 					req.session.loggedIn = true;
 					req.session.username = sqlres[0].username;
-					res.setHeader("Content-Type", "text/plain");
-					res.writeHead(401);
-					res.end("Zalogowano");
+
+					WriteHeaderPlain(res, 201, "Zalogowano");
 					
 					req.session.save(function(err) {
 						if (err) throw err
@@ -393,15 +383,14 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			{
 				if (err) throw err;
 			});
-			res.setHeader("Content-Type", "text/html");
-			res.writeHead(401);
-			res.end("<h1> Wylogowano </h1>");
+			
+			WriteHeaderPlain(res, 200, "Wylogowano");
+			return;
 		}
 		else
 		{
-			res.setHeader("Content-Type", "text/html");
-			res.writeHead(403);
-			res.end("<h1> Nie jestes zalogowany </h1>");
+			WriteHeaderPlain(res, 401, "Nie zalogowano aby wylogowac");
+			return;
 		}	
 	}
 	
@@ -416,17 +405,13 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		
 		if(fields.password[0] !== fields.confpassword[0])
 		{
-			res.setHeader("Content-Type", "text/plain");
-			res.writeHead(403);
-			res.end("Hasla nie sa takie same");
+			WriteHeaderPlain(res, 403, "Hasla nie sa takie same");
 			return;
 		}
 		
 		if( await CheckIfUsernameExists(fields.login[0]) === true)
 		{
-			res.setHeader("Content-Type", "text/plain");
-			res.writeHead(403);
-			res.end("Ta nazwa uzytkownika jest juz zajeta");
+			WriteHeaderPlain(res, 403, "Ta nazwa uzytkownika jest juz zajeta")
 			return;
 		}
 		
@@ -436,9 +421,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			{
 				if(sqlerr)
 					{
-						res.setHeader("Content-Type", "text/plain");
-						res.writeHead(403);
-						res.end("Blad dostepu do bazy danych")
+						WriteHeaderPlain(res, 500, "Blad dostepu do bazy danych")
 						return;
 					}
 					
@@ -451,9 +434,8 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 					}
 				req.session.loggedIn = true;
 				req.session.username = fields.login[0];
-				res.setHeader("Content-Type", "text/plain");
-				res.writeHead(401);
-				res.end("Zarejestrowano");
+
+				WriteHeaderPlain(res, 201, "Zarejestrowano");
 
 				req.session.save(function(err) {
 					if (err) throw err
@@ -463,8 +445,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		
 	else
 	{
-		res.writeHead(403);
-		res.end("wrong url");
+		WriteHeaderPlain(res, 404, "Wrong URL");
 	}
 }
 
@@ -526,14 +507,12 @@ function isEmpty(obj)
 	return Object.keys(obj).length === 0;
 }
 
-async function writePostHeaderBad(msg)
+async function WriteHeaderPlain(res, hdr, msg)
 {
 	res.setHeader("Content-Type", "text/plain");
-	res.writeHead(403);
+	res.writeHead(hdr);
 	res.end(msg);
-	return;
 }
-
 
 //----------------------------------------------------------------
 //							  PROMISES
