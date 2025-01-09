@@ -56,11 +56,9 @@
   </script>
 
 <script>
-  // Path to your JSON file
   const jsonFilePath = '../filters/teste.json';
 
-  // Fetch the JSON file
-  fetch(jsonFilePath)
+  fetch(jsonFilePath)                                       // Fetch the JSON file
       .then(response => {
           if (!response.ok) {
               throw new Error('HTTP error! Status: ${response.status}');
@@ -68,36 +66,30 @@
           return response.json();
       })
       .then(data => {
-          console.log(data); // For debugging purposes
+          console.log(data);
           generateInputs(data);
       })
       .catch(error => {
           console.error('Error fetching the JSON file:', error);
       });
 
-  // Function to dynamically generate inputs based on JSON
-  function generateInputs(json) {
+  function generateInputs(json) {                           // Function to dynamically generate inputs
       const container = document.getElementById('inputs');
 
-      // Create a title for the filter name
-      const filterTitle = document.createElement('h2');
+      const filterTitle = document.createElement('h2');     // Create a title for the filter name
       filterTitle.textContent = json.filterName;
       container.appendChild(filterTitle);
 
-      // Loop through the options to create inputs
-      json.options.forEach(option => {
-          // Create a wrapper for each option
-          const wrapper = document.createElement('div');
+      json.options.forEach(option => {                      // Work through options
+          const wrapper = document.createElement('div');    // Create a separate elemnt for each input
           wrapper.style.marginBottom = '20px';
 
-          // Create a label for the input
           const label = document.createElement('label');
           label.textContent = `${option.name}: ${option.description}`;
           label.style.display = 'block';
           wrapper.appendChild(label);
 
-          // Generate input based on the type
-          let input;
+          let input;                                        // Generate input based on the type
           switch (option.type) {
               case 'slider':
                   input = document.createElement('input');
@@ -153,14 +145,12 @@
 
               default:
                   console.warn(`Unknown type: ${option.type}`);
-                  return; // Skip unknown types
+                  return;
           }
 
-          // Append input to the wrapper
-          wrapper.appendChild(input);
+          wrapper.appendChild(input);                       // Append input to the wrapper
 
-          // Append the wrapper to the container
-          container.appendChild(wrapper);
+          container.appendChild(wrapper);                   // Append the wrapper to the container
       });
   }
 </script>
