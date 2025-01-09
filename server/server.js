@@ -335,7 +335,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		)
 	}
 	//--------------------------LOGIN-----------------------------
-	else if(urlPath = "/login")
+	else if(urlPath == "/login")
 	{
 		const form = formidable({});
 		let fields;
@@ -344,39 +344,36 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		[fields, files] = await form.parse(req);
 		
 		sqlConnection.query('SELECT id, username FROM users WHERE username = ? AND password = ?',
-			[fields.login, fields.password],
+			[fields.login[0], fields.password[0]],
 			function(sqlerr, sqlres, sqlfld)
 			{
 				if(sqlerr)
 				{
-					res.setHeader("Content-Type", "text/html");
+					res.setHeader("Content-Type", "text/plain");
 					res.writeHead(403);
-					res.end(`<h1> Blad dostepu do bazy danych: ${sqlerr} </h1>`)
+					res.end("Blad dostepu do bazy danych")
 					return;
 				}
 				console.log(sqlres);
 				if(isEmpty(sqlres))
 				{
-					res.setHeader("Content-Type", "text/html");
+					res.setHeader("Content-Type", "text/plain");
 					res.writeHead(403);
-					res.end(`<h1> Nie udalo sie zalogowac </h1>`);
+					res.end("Nie udalo sie zalogowac");
 					return;
 				}
 				if(req.session.loggedIn)
 				{
-					res.setHeader("Content-Type", "text/html");
+					res.setHeader("Content-Type", "text/plain");
 					res.writeHead(401);
-					res.end(`<h1> Uzytkownik juz zalogowany, ` +
-					 `id uzytownika: ${sqlres[0].id} </h1>`);
+					res.end("Uzytkownik juz zalogowany");
 					 return;
 				}
 					req.session.loggedIn = true;
 					req.session.username = sqlres[0].username;
-					res.setHeader("Content-Type", "text/html");
+					res.setHeader("Content-Type", "text/plain");
 					res.writeHead(401);
-					res.end(`<h1> Zalogowano, id uzytownika: ${sqlres[0].id} </h1>`);
-					
-					console.log(req.session.id);
+					res.end("Zalogowano");
 					
 					req.session.save(function(err) {
 						if (err) throw err
@@ -385,16 +382,14 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		
 		//TODO: Usuwac niebezpieczne znaki z login
 		//TODO: Enkrypcja hasla
-		
-		console.log(fields);
 	}
 	
 	//--------------------------LOGOUT----------------------------
-	else if(urlPath = "/logout")
+	else if(urlPath == "/logout")
 	{
 		if(req.session.loggedIn == true)
 		{
-			store.destroy(req.session.id, function(err)
+			sessionStore.destroy(req.session.id, function(err)
 			{
 				if (err) throw err;
 			});
@@ -408,6 +403,62 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			res.writeHead(403);
 			res.end("<h1> Nie jestes zalogowany </h1>");
 		}	
+	}
+	
+	//-------------------------REGISTER---------------------------
+	else if(urlPath == "/register")
+	{
+		const form = formidable({});
+		let fields;
+		let files;
+		
+		[fields, files] = await form.parse(req);
+		
+		if(fields.password[0] !== fields.confpassword[0])
+		{
+			res.setHeader("Content-Type", "text/plain");
+			res.writeHead(403);
+			res.end("Hasla nie sa takie same");
+			return;
+		}
+		
+		if( await CheckIfUsernameExists(fields.login[0]) === true)
+		{
+			res.setHeader("Content-Type", "text/plain");
+			res.writeHead(403);
+			res.end("Ta nazwa uzytkownika jest juz zajeta");
+			return;
+		}
+		
+		sqlConnection.query('INSERT INTO users(username, password) VALUES (?, ?);',
+			[fields.login[0], fields.password[0]],
+			function(sqlerr, sqlres, sqlfld)
+			{
+				if(sqlerr)
+					{
+						res.setHeader("Content-Type", "text/plain");
+						res.writeHead(403);
+						res.end("Blad dostepu do bazy danych")
+						return;
+					}
+					
+				if(req.session.loggedIn)
+					{
+						sessionStore.destroy(req.session.id, function(err)
+						{
+							if (err) throw err;
+						});
+					}
+				req.session.loggedIn = true;
+				req.session.username = fields.login[0];
+				res.setHeader("Content-Type", "text/plain");
+				res.writeHead(401);
+				res.end("Zarejestrowano");
+
+				req.session.save(function(err) {
+					if (err) throw err
+				})
+			});
 	}
 		
 	else
@@ -474,6 +525,40 @@ function isEmpty(obj)
 {
 	return Object.keys(obj).length === 0;
 }
+
+async function writePostHeaderBad(msg)
+{
+	res.setHeader("Content-Type", "text/plain");
+	res.writeHead(403);
+	res.end(msg);
+	return;
+}
+
+
+//----------------------------------------------------------------
+//							  PROMISES
+//----------------------------------------------------------------
+
+const CheckIfUsernameExists = function(username)
+{
+	return new Promise ((resolve, reject) =>
+	{
+		sqlConnection.query('SELECT username FROM users WHERE username = ?', username,
+			(sqlerr, sqlres, sqlfld) =>
+			{
+				if(sqlerr)
+				{
+					return reject(sqlerr)
+				}
+				if(isEmpty(sqlres))
+				{
+					return resolve(false);
+				}
+				return resolve(true);
+			});
+	});
+};
+
 
 //----------------------------------------------------------------
 //								MAIN

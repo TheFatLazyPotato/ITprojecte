@@ -26,6 +26,7 @@ JavaScript libraries used
     https://github.com/node-formidable/formidable
   mySQL2:
     https://www.npmjs.com/package/mysql2
+	https://devdotcode.com/interact-with-mysql-database-using-async-await-promises-in-node-js/
   Express and related:
 	https://www.npmjs.com/package/express
 	https://www.npmjs.com/package/express-session
