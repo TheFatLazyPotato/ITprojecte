@@ -121,13 +121,14 @@ const sessionMiddleware = session(
 	secret: settings.cookieSecret,
 	//name: "uniqueSessionID",
 	resave: false,
-	saveUninitialized: false,
+	saveUninitialized: true,
 	store: sessionStore,
 	cookie: {
 		path: '/',
 		httpOnly: false,
 		secure: false,
-		maxAge: settings.sessionExpiration
+		maxAge: settings.sessionExpiration,
+		sameSite: "Lax"
 		}
 
 	/*genid: function(req)
@@ -149,6 +150,13 @@ app.all("/*", (req, res) =>
 	req.session.init = "init";
 	requestListener(req, res);
 });
+
+//----------------------------------------------------------------
+//						IMAGE SERVER CONNECTION
+//----------------------------------------------------------------
+
+const imageConnection = new net.Socket();
+imageConnection.connect(8078, "localhost");
 
 //----------------------------------------------------------------
 //							HTML FILES
@@ -275,61 +283,78 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 	//--------------------------FILE-----------------------------
 	if(urlPath == "/sendFile")
 	{	
-		const form = formidable({ uploadDir: __dirname + "/images/requests/raw/", 
-			filename: function ({name, ext, part, form})
+		
+		const form = formidable({
+			uploadDir: __dirname + "/images/requests/raw", 
+			filename: (name, ext, part, form) =>
 			{
-				req.session.image = {};
-				uid(18, function(err, string)
+				/*
+				req.session.image = "";
+				uid(18)
+					.then((stringe) =>
 				{
 					if (err) throw err;
-					req.session.image = string;
+					req.session.image = stringe;
+					
+					//console.log(req);
+					console.log(stringe);
+					
+					return req.session.image;
 				});
-				return req.session.image;
+				*/
+				return req.session.id.toString();
+			
 			},
 			filter: function ({name, originalFilename, mimetype})
 			{
 				return mimetype && mimetype.includes("image");
 			}
 		});
+		
 		let fields;
 		let files;
-		try
-		{
 			// Read image data and create file in correct folder
-			[fields, files] = await form.parse(req);
-			console.log("File created");
+			//console.log(form.IncomingForm.options.filename.toString());
 			
-			// Add image data to session
+			[fields, files] = await form.parse(req)
+				.then( () =>
+			{
+				console.log("File created");
+				imageConnection.write(req.session.id.padEnd(1024, '\0'));
+				imageConnection.on('data',
+					data =>
+					{
+						console.log(data);
+					}
+				)
+			});
 			
-		}
+			form.on("end", () =>
+			{
+				fs.readFile(__dirname + "/images/requests/raw/" + req.session.id)
+					.then(im => 
+					{
+						res.setHeader("Content-Type", "image/png");
+						res.writeHead(201);
+						res.end(im);
+					})
+					.catch(err =>
+					{
+						console.error(err);
+
+						WriteHeaderPlain(res, 500, "File was sent on the server but cannot be read back")
+					});
+			});
+			
+		
+		/*
 		catch (err)
 		{
+			console.error(err);
 			WriteHeaderPlain(res, err.httpCode || 400, String(err));
 			return;
 		}
-		
-		fs.readFile(__dirname + "/images/requests/raw/" + urlArgs.name)
-			.then(im => 
-			{
-				res.setHeader("Content-Type", "image/png");
-				res.writeHead(201);
-				res.end(im);
-				//tcpClient.write("hihihihih\0");
-			})
-			.catch(err =>
-			{
-				console.error(err);
-
-				WriteHeaderPlain(res, 500, "File was sent on the server but cannot be read back")
-		});
-		
-		await tcpClient.write("/raw/teste.png".padEnd(1024,'\0'));
-		tcpClient.on('data',
-			data =>
-			{
-				console.log(data);
-			}
-		)
+		*/
 	}
 	//--------------------------LOGIN-----------------------------
 	else if(urlPath == "/login")
@@ -450,7 +475,7 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 }
 
 //----------------------------------------------------------------
-//							SERVER
+//							HTTP SERVER
 //----------------------------------------------------------------
 
 const requestListener = function (req, res) {
@@ -497,6 +522,11 @@ const requestListener = function (req, res) {
 			break;
 	}
 };
+
+//----------------------------------------------------------------
+//							IMAGE SERVER
+//----------------------------------------------------------------
+
 
 //----------------------------------------------------------------
 //								MISC
@@ -546,14 +576,9 @@ const CheckIfUsernameExists = function(username)
 
 
 const server = http.createServer(app);
+
+
   
 server.listen(settings.serverPort, settings.serverHost, () => {
   console.info(`Server is running on http://${settings.serverHost}:${settings.serverPort}`);
 });
-
-const tcpClient = new net.Socket();
-tcpClient.connect(8078, "localhost", 
-	() =>
-	{
-		tcpClient.write("teste".padEnd(1024,'\0'));
-	});

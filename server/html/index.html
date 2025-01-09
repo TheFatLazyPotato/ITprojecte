@@ -22,10 +22,10 @@
     <div class="col upload">
       <h2>Upload your Image</h2>
       <p>Select an image to upload:</p>
-      <form id="uploadForm" method="post" action="/sendFile" enctype="multipart/form-data">
+      <form id="uploadForm">
         <label for="fileInput" class="button-choose-file">Choose File</label>
         <input type="file" id="fileInput" name="file" accept="image/*" required style="display:none;">
-        <button type="button" class="button">Upload</button>
+        <button type="submit" class="button">Upload</button>
       </form>
       <img id="preview" class="preview-image" alt="Selected Image Preview" src="../images/html_images/Landscapo.png">
     </div>
@@ -38,7 +38,10 @@
   <footer style="background-color: #333; color: #fff; text-align: center; padding: 10px;">
     <p>Logo.com &copy; 2024</p>
   </footer>
+  
+  <script type="text/javascript" src="/scripts/upload.js"></script>
 
+<!--
   <script>
     const fileInput = document.getElementById('fileInput');
     const preview = document.getElementById('preview');
@@ -54,6 +57,7 @@
       }
     });
   </script>
+ -->
 
 <script>
   // Path to your JSON file
