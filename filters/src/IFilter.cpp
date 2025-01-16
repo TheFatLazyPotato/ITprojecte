@@ -12,7 +12,3 @@ IFilter::~IFilter()
 {
 	//delete image;
 }
-
-
-IFilter::ReturnStatus IFilter::AddInstruction()
-{}

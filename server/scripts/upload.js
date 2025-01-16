@@ -1,8 +1,7 @@
 const form = document.querySelector("#uploadForm");
-
-
+//const preview = document.getElementById('preview');
 const fileInput = document.getElementById('fileInput');
-
+//const applyButton = document.getElementById('filterButton');
 
 async function uploadFile() {
     
@@ -19,7 +18,7 @@ async function uploadFile() {
     formData.append('file', file);
 	*/
 	
-	const formData = new FormData(form);  // THIS MUST BE INSIDE THE FUNCTION FOR SOME REASON
+	const formData = new FormData(form);
 
     try {
         // Make the request to the server
@@ -37,9 +36,19 @@ async function uploadFile() {
         }
     } catch (error) {
         console.error('Error uploading file:', error);
-        statusDiv.innerText = 'Error uploading file.';
     }
 }
+
+
+
+/*
+applyButton.addEventListener("onclick", (event) =>
+{
+    console.error("clicke");
+    event.preventDefault();
+    applyFilters();
+});
+*/
 
 // Wait for form submit
 form.addEventListener("submit", (event) =>

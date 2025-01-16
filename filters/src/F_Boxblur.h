@@ -1,5 +1,6 @@
 #pragma once
 #include "IFilter.h"
+
 class F_Boxblur :
     public IFilter
 {

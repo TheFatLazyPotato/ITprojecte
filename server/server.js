@@ -158,6 +158,11 @@ app.all("/*", (req, res) =>
 const imageConnection = new net.Socket();
 imageConnection.connect(8078, "localhost");
 
+async function ApplyImageFilter(name)
+{
+	
+}
+
 //----------------------------------------------------------------
 //							HTML FILES
 //----------------------------------------------------------------
@@ -189,7 +194,7 @@ for(let i in settings.html)
 function handleGetRequest(req, res, urlPath, urlArgs)
 {
 	//--------------------------IMAGE-----------------------------
-	if(urlPath.startsWith("/images/html_images/"))
+	if(urlPath.startsWith("/images/"))
 	{
 		res.setHeader("Content-Type", "image/jpg");
 		fs.readFile(__dirname + urlPath)
@@ -302,7 +307,13 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 					return req.session.image;
 				});
 				*/
-				return req.session.id.toString();
+				let filetype = part.originalFilename.split('.');
+				if(!req.session.filetype)
+					req.session.filetype = "";
+				req.session.filetype = filetype.at(-1);
+				console.log(filetype.at(-1));
+				req.session.save();
+				return req.session.id.toString() + '.' + filetype.at(-1);
 			
 			},
 			filter: function ({name, originalFilename, mimetype})
@@ -320,13 +331,14 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			
 			[fields, files] = await form.parse(req);
 			console.log("File created");
-			imageConnection.write(req.session.id.padEnd(1024, '\0'));
+			/*imageConnection.write(req.session.id.padEnd(1024, '\0'));
 			imageConnection.on('data',
 				data =>
 				{
 					console.log(data);
 				}
 			)
+			*/
 			
 			form.on("end", () =>
 			{
@@ -355,6 +367,56 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 		}
 		
 	}
+	//-----------------------APPLY-FILTERS------------------------
+	else if(urlPath == "/applyFilter")
+	{
+		const form = formidable({});
+		let fields;
+		let files;
+		
+		[fields, files] = await form.parse(req);
+		
+		console.log(fields);
+		console.log(files);
+		
+		// Zapisanie instrukcji
+		fs.writeFile(__dirname + "/images/requests/raw/" + req.session.id.toString() + ".json", JSON.stringify(fields))
+			.then( () =>
+			{
+				console.log("File created");
+				let message = req.session.id.toString() + "." + req.session.filetype;
+				
+				imageConnection.write(message.padEnd(1024, "\0"), () =>
+				{
+					
+					// TODO: Przestawic eventa w inne miejsce bo powoduje problemy
+					imageConnection.on("data", (data) =>
+					{
+					let read = data.toString()
+					console.log(read);	
+					
+					if(read.search("GOOD") != -1)
+					{
+					console.log("Jest GOOD");
+					WriteHeaderPlain(res, 201, "/images/requests/post_full/"+req.session.id.toString() + ".png");
+					}
+					else
+					{
+					WriteHeaderPlain(res, 500, "Wystapil blad podczas edytowania obrazu");
+					}
+					});
+				});
+			})
+			.catch ( (err) =>
+			{
+				if (err)
+				{
+					WriteHeaderPlain(res, 500, "Wystapil blad podczas odczytu przeslanych danych");
+					return;
+				}
+			});
+	}
+	
 	//--------------------------LOGIN-----------------------------
 	else if(urlPath == "/login")
 	{
@@ -538,9 +600,17 @@ function isEmpty(obj)
 
 async function WriteHeaderPlain(res, hdr, msg)
 {
+	try
+	{
 	res.setHeader("Content-Type", "text/plain");
 	res.writeHead(hdr);
 	res.end(msg);
+	console.log(`Przeslano ${msg}`);
+	}
+	catch
+	{
+		console.warn(`Nie mozna wyslac: ${msg}`);
+	}
 }
 
 //----------------------------------------------------------------

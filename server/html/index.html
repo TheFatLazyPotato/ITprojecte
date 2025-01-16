@@ -32,6 +32,7 @@
 
     <div class="col settings">
       <div id="inputs"></div>
+      <button class="button" onclick="applyFilters()">Apply</button>
     </div>
   </div>
 
@@ -39,7 +40,7 @@
     <p>Logo.com &copy; 2024</p>
   </footer>
   
-  <script type="text/javascript" src="/scripts/upload.js"></script>
+  <script type="text/javascript" src="/scripts/upload.js" defer></script>
 
 <!--
   <script>
@@ -60,7 +61,7 @@
  -->
 
 <script>
-  const jsonFilePath = '../filters/teste.json';
+  const jsonFilePath = '../filters/boxblur.json';
 
   fetch(jsonFilePath)                                       // Fetch the JSON file
       .then(response => {
@@ -79,7 +80,9 @@
 
   function generateInputs(json) {                           // Function to dynamically generate inputs
       const container = document.getElementById('inputs');
-
+	  
+	  container.dataset.filterId = json.filterId;			// Create id for the filter
+	  
       const filterTitle = document.createElement('h2');     // Create a title for the filter name
       filterTitle.textContent = json.filterName;
       container.appendChild(filterTitle);
@@ -156,7 +159,60 @@
 
           container.appendChild(wrapper);                   // Append the wrapper to the container
       });
-  }
+    }
+</script>
+
+
+<script>
+    const preview = document.getElementById('preview');
+
+    async function applyFilters() {
+        console.log("starte");
+
+        const filterOptions = document.querySelectorAll('#inputs select, #inputs input');
+        const formattedOptions = { "1": {} };
+		
+		const container = document.getElementById('inputs');
+		formattedOptions["1"]["id"] = container.dataset.filterId;
+
+        // Odczytaj dane 
+        filterOptions.forEach(function (param) {
+            if (param.type === "range" || param.type === "number")
+                formattedOptions["1"][param.id] = param.value;
+            else if (param.type === "checkbox")
+                formattedOptions["1"][param.id] = param.checked;
+			else if (param.type === "select-one")
+				formattedOptions["1"][param.id] = param.options[param.selectedIndex].text;
+        });
+
+        myHeader = new Headers();
+        myHeader.append("Content-Type", "text/json");
+
+        fetch(String("/applyFilter"), {
+            method: "POST",
+            headers: myHeader,
+            body: JSON.stringify(formattedOptions)
+        })
+		.then(response => 
+		{
+		
+		if (response.ok)
+		{
+			response.text()
+			.then(text =>
+			{
+				preview.src = text;
+			})
+			.then( () =>
+			{
+				preview.src = preview.src;
+			})
+		}
+		else
+			console.warn(`/applyFilter responded ${response.status}`);
+		});
+        console.log(formattedOptions);
+    }
 </script>
 </body>
 </html>

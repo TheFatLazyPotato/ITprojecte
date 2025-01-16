@@ -1,0 +1,54 @@
+{
+	"filterName": "Box Blur",
+	"filterId": "boxblur",
+	"options": [
+		{
+			"id": "b",
+			"name": "X",
+			"description": "Size of the box along the X axis",
+			"type": "integer",
+			"options": {
+				"min": "0",
+				"max": "500",
+				"default": 10
+			}
+		},
+		{
+			"id": "a",
+			"name": "Y",
+			"description": "Size of the box along the Y axis",
+			"type": "integer",
+			"options": {
+				"min": "0",
+				"max": "500",
+				"default": 10
+			}
+		},
+		{
+			"id": "iterations",
+			"name": "Number of iterations",
+			"description": "How many times will the blur be repeated",
+			"type": "slider",
+			"options": {
+				"min": 0,
+				"max": 100,
+				"step": 1,
+				"default": 1
+			}
+		},
+		{
+			"id": "boundary",
+			"name": "Boundary",
+			"description": "Way to handle pixels on the edges",
+			"type": "list",
+			"options": {
+				"values": [
+					"periodic",
+					"mirror",
+					"dirichlet",
+					"neumann"
+				]
+			}
+		}
+	]
+}

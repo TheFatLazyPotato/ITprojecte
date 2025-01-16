@@ -2,7 +2,7 @@
 
 using json = nlohmann::json;
 
-static std::string path = "../server/images/requests/";
+static std::string path = "images/requests/";
 
 Server::Server(unsigned short p) :
 	port(p)
@@ -17,7 +17,7 @@ void ProcessImage(std::string fileName, asio::ip::tcp::socket* socket, std::mute
 {
 	auto imageData = new cimg_library::CImg<uint8_t>;
 	//char pathTmp[sizeof(fileName) / sizeof(char) + 64];
-	uint8_t message[maxFrameLength];
+	char message[maxFrameLength];
 	std::ifstream paramFile;
 	json js;
 
@@ -31,9 +31,11 @@ void ProcessImage(std::string fileName, asio::ip::tcp::socket* socket, std::mute
 	std::cout << "Processing of " << fileName << " has started" << std::endl;
 	#endif
 
+	std::string fileNameClear = fileName.substr(0, fileName.find_last_of('.'));
+
 	
-	std::string pathImage = path; pathImage.append("raw / ").append(fileName);
-	std::string pathInstruction = pathImage; pathInstruction.append(".json");
+	std::string pathImage = path; pathImage.append("raw/").append(fileName);
+	std::string pathInstruction = path; pathInstruction.append("raw/").append(fileNameClear).append(".json");
 	//std::string pathPreview = path; pathPreview.append("post_preview/").append(fileName);
 	std::string pathFull = path; pathFull.append("post_full/").append(fileName);
 
@@ -48,16 +50,28 @@ void ProcessImage(std::string fileName, asio::ip::tcp::socket* socket, std::mute
 		std::cout << "Error in parameter file" << std::endl;
 		return;
 	}
-	js = json::parse(paramFile);
-	unsigned int i = 1;
+	try
+	{
+		js = json::parse(paramFile);
+		#ifndef NDEBUG
+			std::cout << "Successful JSON parse" << std::endl;
+		#endif
+	}
+	catch (std::exception e)
+	{
+		std::cout << e.what() << std::endl;
+		return;
+	}
+	unsigned int index = 1;
 
 	while (true)
 	{
-		IFilter* fil = FilterManager::CreateFilter(&js, i, imageData);
+		IFilter* fil = FilterManager::CreateFilter(&js, index, imageData);
 		if (fil == nullptr)
 			break;
 
 		filters.push_back(fil);
+		index++;
 	}
 
 
@@ -76,7 +90,7 @@ void ProcessImage(std::string fileName, asio::ip::tcp::socket* socket, std::mute
 
 	//mutSocket->lock();
 	std::memset(message, '\0', sizeof(message));
-	sprintf_s((char*)message, sizeof(message), "FINISH %s", fileName);
+	sprintf_s(message, sizeof(message), "GOOD\0");
 	asio::write(*socket, asio::buffer(message, maxFrameLength));
 	//mutSocket->unlock();
 
@@ -88,7 +102,7 @@ void session(asio::ip::tcp::socket socket)
 {
 	//auto imageData = new cimg_library::CImg<uint8_t>;
 	uint8_t message[maxFrameLength];
-	char fileName[32];
+	std::string fileName;
 	std::mutex mutSocket;
 
 	std::cout << "Connected to JavaScript server" << std::endl;
@@ -104,14 +118,17 @@ void session(asio::ip::tcp::socket socket)
 			std::cout << "Message from Javascript server: " << message << std::endl;
 			
 			// Process message
-			strcpy_s(fileName, 32, (char *)message);
+			fileName.assign(std::begin(message), std::end(message) - 1);
 			// Wrong info
 				// Return error
 			// Get image data from file
 			// Decode image data into RGB(A) bitmap (maybe do those on separate thread)
 				//imageData->assign("teste.png");
 			
-			std::thread(ProcessImage, fileName, &socket, &mutSocket).detach();
+			//std::thread(ProcessImage, fileName, &socket, &mutSocket).detach();
+			
+			ProcessImage(fileName, &socket, &mutSocket);
+
 			// Process image
 				//imageData->blur_box(100, 2);
 			// Encode into right format
@@ -120,11 +137,11 @@ void session(asio::ip::tcp::socket socket)
 				//imageData->assign();
 			
 			// Return success
-			std::memset(message, '\0', sizeof(message));
-			sprintf_s((char *)message, sizeof(message), "START %s", fileName);
-			asio::write(socket, asio::buffer(message, maxFrameLength));
+			//std::memset(message, '\0', sizeof(message));
+			//sprintf_s((char *)message, sizeof(message), "START %s", fileName);
+			//asio::write(socket, asio::buffer(message, maxFrameLength));
 
-			std::this_thread::yield();
+			//std::this_thread::yield();
 			//mutSocket.unlock();
 		}
 	}
