@@ -201,11 +201,7 @@
 			response.text()
 			.then(text =>
 			{
-				preview.src = text;
-			})
-			.then( () =>
-			{
-				preview.src = preview.src;
+				preview.src = text + "?time=" + new Date().getTime();
 			})
 		}
 		else
