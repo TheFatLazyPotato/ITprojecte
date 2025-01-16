@@ -3,7 +3,7 @@
 	"filterId": "boxblur",
 	"options": [
 		{
-			"id": "b",
+			"id": "a",
 			"name": "X",
 			"description": "Size of the box along the X axis",
 			"type": "integer",
@@ -14,7 +14,7 @@
 			}
 		},
 		{
-			"id": "a",
+			"id": "b",
 			"name": "Y",
 			"description": "Size of the box along the Y axis",
 			"type": "integer",

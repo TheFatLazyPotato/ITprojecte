@@ -1,0 +1,26 @@
+{
+	"filterName": "Quantization",
+	"filterId" : "quantize",
+	"options": [
+		{
+			"id": "n",
+			"name": "Number of Values",
+			"description": "To how many different colors image is being reduced",
+			"type": "integer",
+			"options": {
+				"min": 1,
+				"max": 1000,
+				"default": 16
+			}
+		},
+		{
+			"id": "keeprange",
+			"name": "Keep Original Range?",
+			"description": "",
+			"type": "bool",
+			"options": {
+				"default": true
+			}
+		}
+	]
+}

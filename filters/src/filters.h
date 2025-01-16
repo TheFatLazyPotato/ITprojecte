@@ -2,6 +2,8 @@
 #include <string>
 
 #include "F_Boxblur.h"
+#include "F_Normalize.h"
+#include "F_Quantize.h"
 
 #include "CImg.h"
 #include <json.hpp>

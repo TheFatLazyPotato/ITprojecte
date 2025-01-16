@@ -1,0 +1,30 @@
+{
+	"filterName": "Normalization",
+	"filterId" : "normalize",
+	"options": [
+		{
+			"id": "min",
+			"name": "Min",
+			"description": "Lowest possible value of a pixel",
+			"type": "slider",
+			"options": {
+				"min": 0,
+				"max": 255,
+				"step": 1,
+				"default": 0
+			}
+		},
+		{
+			"id": "max",
+			"name": "Max",
+			"description": "Highest possible value of a pixel",
+			"type": "slider",
+			"options": {
+				"min": 0,
+				"max": 255,
+				"step": 1,
+				"default": 255
+			}
+		}
+	]
+}

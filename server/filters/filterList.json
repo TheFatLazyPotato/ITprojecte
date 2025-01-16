@@ -1,0 +1,7 @@
+{
+	"filters" : {
+		"normalize",
+		"boxblur",
+		"quantize"
+	}
+}
