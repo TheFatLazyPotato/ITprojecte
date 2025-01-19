@@ -1,16 +1,18 @@
 {
 	"serverHost": "localhost",
 	"serverPort": 8077,
-	
-	"cookieSecret": "funneh",
-	"sessionResave": true,
-	"sessionSaveUninitialized": true,
-	"sessionExpiration": 86400000,
 
 	"sqlHost": "localhost",
-	"sqlUser": "teste",
-	"sqlPassword": "Marek1234",
-	"sqlDatabase": "logo",
+	"sqlPort": "3306",
+	"sqlUserData": "LoginForUserManager",
+	"sqlPasswordData": "ThisAlsoShouldBeLongWindedAndComplicatedMaybeEvenMoreThanUsual",
+	
+	"sqlUserSession": "LoginForSessionManager",
+	"sqlPasswordSession": "IThinkByThisPointYouGetTheMessageButJustToBeClearThisShouldBeLongWindedAndComplicated",
+	"cookieSecret": "ThisShouldBeLongWindedAndComplicated",
+	"sessionExpiration": 86400000,
+	
+	"sqlDatabase": "DatabaseName",
 	
 	"html":
 	[
