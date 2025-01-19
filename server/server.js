@@ -12,7 +12,6 @@ const expressSql = require("express-mysql-session")(session);
 
 const net = require("net");
 
-var minimist = require("minimist");
 const fs = require("fs").promises;
 import open from "node:fs";
 import formidable from 'formidable';
@@ -38,20 +37,8 @@ await fs.readFile(__dirname + "/config.json")
 	});
 
 //----------------------------------------------------------------
-//							CMD ARGUMENTS
+//							MYSQL CONNECTION
 //----------------------------------------------------------------
-/*
-//Get cmd arguments
-var args = minimist(process.argv.slice(2), {
-	string: 'host',
-	string: 'port',
-	alias: {h: 'host', p: 'port'},
-	default: {host: "localhost", port: "8000"}
-});
-
-const port = Number(args.port);
-
-*/
 
 var sqlConnection = mysql.createConnection(
 {
