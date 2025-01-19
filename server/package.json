@@ -9,7 +9,6 @@
     "express-mysql-session": "^3.0.3",
     "express-session": "^1.18.1",
     "formidable": "^3.5.2",
-    "minimist": "^1.2.8",
     "mysql2": "^3.12.0"
   }
 }
