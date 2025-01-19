@@ -12,8 +12,6 @@ const expressSql = require("express-mysql-session")(session);
 
 const net = require("net");
 
-const uid = require("uid-safe");
-
 var minimist = require("minimist");
 const fs = require("fs").promises;
 import open from "node:fs";
@@ -130,15 +128,6 @@ const sessionMiddleware = session(
 		maxAge: settings.sessionExpiration,
 		sameSite: "Lax"
 		}
-
-	/*genid: function(req)
-	{
-		uid(18, function(err, str)
-		{
-			if (err) throw err;
-			return str;
-		})
-	}*/
 });
 
 //const httpServer = createServer(app);
@@ -293,20 +282,6 @@ async function handlePostRequest(req, res, urlPath, urlArgs)
 			uploadDir: __dirname + "/images/requests/raw", 
 			filename: (name, ext, part, form) =>
 			{
-				/*
-				req.session.image = "";
-				uid(18)
-					.then((stringe) =>
-				{
-					if (err) throw err;
-					req.session.image = stringe;
-					
-					//console.log(req);
-					console.log(stringe);
-					
-					return req.session.image;
-				});
-				*/
 				let filetype = part.originalFilename.split('.');
 				if(!req.session.filetype)
 					req.session.filetype = "";
