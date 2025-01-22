@@ -8,3 +8,4 @@ server/db_password.txt
 server/FilterObslugiwer.exe
 /server/html/.vs
 server/runServerFull.bat
+server/filters/_active.json

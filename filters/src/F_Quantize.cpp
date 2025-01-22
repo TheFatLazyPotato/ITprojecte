@@ -17,12 +17,13 @@ IFilter::ReturnStatus F_Quantize::RunFilter()
 	//auto p = (*parameters)["1"].template get<param>();
 
 	unsigned int n = std::stoi((*parameters)[id_str].value("n", "256"));
-	bool keep_range = (*parameters)[id_str].value("keeprange", true);
+	// bool keep_range = (*parameters)[id_str].value("keeprange", true);
 
 	try
 	{
 		//image->blur_box((*parameters)[id_str]["a"], (*parameters)[id_str]["b"], 1, bnd, (*parameters)[id_str]["iterations"]);
-		image->quantize(n, keep_range);
+		image->quantize(n, false);
+		(*image) *= (float)255 / (n-1);
 	}
 	catch (const std::exception e)
 	{

@@ -12,15 +12,6 @@
 				"max": 1000,
 				"default": 16
 			}
-		},
-		{
-			"id": "keeprange",
-			"name": "Keep Original Range?",
-			"description": "",
-			"type": "bool",
-			"options": {
-				"default": true
-			}
 		}
 	]
 }
